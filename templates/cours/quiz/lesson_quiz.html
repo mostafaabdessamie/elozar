@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+
+{% block title %}MathEdu: Quiz-{{ lesson.title }}{% endblock %}
+{% block content %}
+<div class="container mt-5">
+    <h1 class="text-center text-primary mb-4">📝 Quiz: {{ lesson.title }}</h1>
+
+    <form method="POST">
+        {% csrf_token %}
+        <div class="row">
+            {% for question in questions %}
+                <div class="col-md-4 mb-4">
+                    <div class="question-box p-4 border border-light rounded shadow-sm bg-info">
+                        <h5 class="text-dark">{{ question.text }}</h5>
+                        
+                        {% for choice in question.choices.all %}
+                            <div class="form-check mb-3">
+                                <input type="radio" name="question_{{ question.id }}" value="{{ choice.id }}" class="form-check-input" required>
+                                <label class="form-check-label text-muted">{{ choice.text }}</label>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        <div class="text-center mt-4">
+            <button type="submit" class="btn btn-lg btn-success">📤 Soumettre</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

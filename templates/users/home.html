@@ -1,0 +1,195 @@
+{% extends 'base.html' %}
+{% load humanize static %}
+{% block content %}
+<style>
+:root{ --bg:#f0f2f5; --card:#ffffff; --primary:#0866ff; }
+body{ background:var(--bg) !important; }
+.feed-card{ background:var(--card); border-radius:12px; border:none; box-shadow:0 1px 2px rgba(0,0,0,.1); transition:.2s; }
+.feed-card:hover{ box-shadow:0 4px 12px rgba(0,0,0,.12); }
+.post-image{ width:100%; max-height:500px; object-fit:cover; border-radius:12px; margin-top:10px; cursor:pointer; }
+.avatar-img{ width:42px; height:42px; border-radius:50%; object-fit:cover; }
+.avatar-sm{ width:32px; height:32px; border-radius:50%; object-fit:cover; }
+.avatar-fallback{ width:32px; height:32px; border-radius:50%; background:#e4e6eb; display:inline-flex; align-items:center; justify-content:center; font-weight:bold; }
+.comment-box{ background:#f0f2f5; border-radius:18px; padding:8px 12px; }
+.sidebar-card{ background:var(--card); border-radius:12px; box-shadow:0 1px 2px rgba(0,0,0,.08); position:sticky; top:80px; }
+.like-btn{ border-radius:20px; font-weight:600; }
+</style>
+
+<div class="container-fluid mt-4" style="max-width:1250px;">
+<div class="row g-4">
+
+<!-- FEED -->
+<div class="col-lg-8">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3 class="fw-bold m-0">Fil d'actualité</h3>
+        <a href="{% url 'post_create' %}" class="btn btn-primary px-4 rounded-pill fw-bold">
+            <i class="bi bi-plus-lg me-1"></i> Publier
+        </a>
+    </div>
+
+    {% for post in posts %}
+    <div class="feed-card mb-3 p-3">
+        <!-- HEADER -->
+        <div class="d-flex align-items-center mb-2">
+            {% if post.user.profile_picture %}
+                <img src="{{ post.user.profile_picture.url }}" class="avatar-img">
+            {% else %}
+                <img src="https://ui-avatars.com/api/?name={{ post.user.username }}&background=0866ff&color=fff" class="avatar-img">
+            {% endif %}
+            <div class="ms-2">
+                <div class="fw-bold" style="line-height:1">
+                    {{ post.user.username }}
+                    {% if post.user.user_type == 2 %}<span class="badge bg-warning text-dark ms-1" style="font-size:10px">Prof</span>{% endif %}
+                    {% if post.user.user_type == 3 %}<span class="badge bg-info ms-1" style="font-size:10px">Étudiant</span>{% endif %}
+                </div>
+                <small class="text-muted"><i class="bi bi-clock"></i> {{ post.created_at|naturaltime }}</small>
+            </div>
+            <div class="ms-auto"><i class="bi bi-three-dots text-muted"></i></div>
+        </div>
+
+        <h5 class="fw-bold mt-2 mb-1">{{ post.title }}</h5>
+        <p class="text-dark mb-2" style="white-space:pre-wrap;">{{ post.content }}</p>
+
+        {% if post.image %}
+        <img src="{{ post.image.url }}" class="post-image" data-bs-toggle="modal" data-bs-target="#imgModal{{ post.id }}">
+        <!-- MODAL IMAGE -->
+        <div class="modal fade" id="imgModal{{ post.id }}" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered modal-lg">
+                <div class="modal-content bg-transparent border-0">
+                    <img src="{{ post.image.url }}" class="img-fluid rounded-3">
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="d-flex justify-content-between text-muted small py-2 border-top border-bottom my-2">
+            <span><i class="bi bi-hand-thumbs-up-fill text-primary"></i> {{ post.like_set.count }} J'aime</span>
+            <span>{{ post.comments.count }} commentaires</span>
+        </div>
+
+        <div class="d-flex gap-2 mb-3">
+            <a href="{% url 'like_post' post.id %}" class="btn btn-light like-btn flex-fill"><i class="bi bi-hand-thumbs-up me-1"></i> J'aime</a>
+            <button class="btn btn-light like-btn flex-fill"><i class="bi bi-chat me-1"></i> Commenter</button>
+        </div>
+
+        <!-- COMMENTS -->
+        {% for comment in post.comments.all %}
+        <div class="d-flex gap-2 mb-2">
+            {% if comment.user.profile_picture %}
+                <img src="{{ comment.user.profile_picture.url }}" class="avatar-sm">
+            {% else %}
+                <div class="avatar-fallback">{{ comment.user.username|first|upper }}</div>
+            {% endif %}
+            <div class="comment-box flex-grow-1">
+                <span class="fw-bold small">{{ comment.user.username }}</span>
+                <div class="small">{{ comment.content }}</div>
+            </div>
+        </div>
+        <small class="text-muted ms-5 d-block mb-2">{{ comment.created_at|naturaltime }}</small>
+        {% endfor %}
+
+        <!-- ADD COMMENT -->
+        <form method="post" action="{% url 'comment_create' post.id %}" class="d-flex gap-2 mt-3">
+            {% csrf_token %}
+            {% if request.user.profile_picture %}
+                <img src="{{ request.user.profile_picture.url }}" class="avatar-sm">
+            {% else %}
+                <div class="avatar-fallback">{{ request.user.username|first|upper }}</div>
+            {% endif %}
+            <div class="flex-grow-1 position-relative">
+                <input type="text" name="content" class="form-control" style="border-radius:20px; background:#f0f2f5; padding-right:45px;" placeholder="Écrivez un commentaire..." required>
+                <button type="submit" class="btn btn-primary btn-sm position-absolute" style="right:5px; top:4px; border-radius:50%; width:32px; height:32px;"><i class="bi bi-send-fill"></i></button>
+            </div>
+        </form>
+    </div>
+    {% empty %}
+    <div class="feed-card p-5 text-center text-muted"><i class="bi bi-inbox fs-1"></i><p class="mt-2">Aucune publication pour l'instant</p></div>
+    {% endfor %}
+</div>
+
+<!-- SIDEBAR -->
+<div class="col-lg-4">
+    <div class="sidebar-card p-3 mb-3 d-flex align-items-center">
+        {% if request.user.profile_picture %}
+            <img src="{{ request.user.profile_picture.url }}" style="width:50px; height:50px; border-radius:50%; object-fit:cover;" class="me-2">
+        {% else %}
+            <img src="https://ui-avatars.com/api/?name={{ request.user.username }}&background=0866ff&color=fff" width="50" class="rounded-circle me-2">
+        {% endif %}
+        <div>
+            <div class="fw-bold">{{ request.user.username }}</div>
+            <small class="text-muted">{{ request.user.get_user_type_display }}</small>
+        </div>
+    </div>
+
+    <div class="sidebar-card p-3 mb-3">
+        <h6 class="fw-bold mb-3"><i class="bi bi-people me-2 text-primary"></i> Mes amis ({{ friends|length }})</h6>
+        {% for friend in friends %}
+        <div class="d-flex align-items-center mb-2">
+            <span class="small fw-semibold">{{ friend.user.username }}</span>
+            <span class="ms-auto bg-success rounded-circle" style="width:8px; height:8px;"></span>
+        </div>
+        {% empty %}<p class="text-muted small">Aucun ami</p>{% endfor %}
+    </div>
+
+    <div class="sidebar-card p-3 mb-3">
+        <h6 class="fw-bold mb-3"><i class="bi bi-person-plus me-2 text-warning"></i> Demandes d'amis</h6>
+        {% for req in friend_requests %}
+        <div class="bg-light p-2 rounded-3 mb-2 d-flex align-items-center justify-content-between">
+            <small class="fw-bold">{{ req.from_user.username }}</small>
+            <div>
+                <a href="{% url 'accept_friend_request' req.id %}" class="btn btn-primary btn-sm rounded-circle"><i class="bi bi-check-lg"></i></a>
+                <a href="{% url 'reject_friend_request' req.id %}" class="btn btn-light btn-sm rounded-circle"><i class="bi bi-x-lg"></i></a>
+            </div>
+        </div>
+        {% empty %}<small class="text-muted">Pas de demandes</small>{% endfor %}
+        <hr>
+        <form method="post" action="{% url 'send_friend_request' %}">
+            {% csrf_token %}
+            <div class="input-group input-group-sm">
+                <select name="to_user" class="form-select" required>
+                    <option disabled selected>Choisir...</option>
+                    {% for u in all_users %}<option value="{{ u.id }}">{{ u.username }}</option>{% endfor %}
+                </select>
+                <button class="btn btn-warning"><i class="bi bi-person-plus"></i></button>
+            </div>
+        </form>
+            <div class="sidebar-card p-3">
+        <h6 class="fw-bold mb-3"><i class="bi bi-chat-dots me-2 text-success"></i> Messages</h6>
+        
+        <div style="max-height:220px; overflow-y:auto;" class="mb-3">
+            {% for message in received_messages %}
+            <div class="mb-2 p-2 rounded d-flex gap-2" style="background:#f0f2f5">
+                {% if message.sender.profile_picture %}
+                    <img src="{{ message.sender.profile_picture.url }}" class="avatar-sm" style="width:24px; height:24px">
+                {% else %}
+                    <div class="avatar-fallback" style="width:24px; height:24px; font-size:10px">{{ message.sender.username|first|upper }}</div>
+                {% endif %}
+                <div class="flex-grow-1">
+                    <small class="fw-bold d-block" style="line-height:1">{{ message.sender.username }}</small>
+                    <div class="small">{{ message.content|truncatechars:60 }}</div>
+                    <small class="text-muted" style="font-size:10px">{{ message.timestamp|naturaltime }}</small>
+                </div>
+            </div>
+            {% empty %}
+            <small class="text-muted">Aucun message</small>
+            {% endfor %}
+        </div>
+
+        <form method="post" action="{% url 'send_message' %}">
+            {% csrf_token %}
+            <select name="receiver" class="form-select form-select-sm mb-2" required>
+                <option disabled selected>À...</option>
+                {% for u in all_users %}<option value="{{ u.id }}">{{ u.username }}</option>{% endfor %}
+            </select>
+            <div class="input-group">
+                <input type="text" name="content" class="form-control form-control-sm" placeholder="Écrire un message..." required>
+                <button class="btn btn-primary btn-sm"><i class="bi bi-send-fill"></i></button>
+            </div>
+        </form>
+    </div>
+    </div>
+</div>
+
+</div>
+</div>
+{% endblock %}

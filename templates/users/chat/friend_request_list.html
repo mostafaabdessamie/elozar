@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-5">
+    <h1>Demandes d'amis</h1>
+    <ul class="list-group">
+        {% for request in friend_requests %}
+        <li class="list-group-item">
+            <p>Demande de {{ request.from_user.username }}</p>
+            <a href="{% url 'friend_request_accept' request.pk %}" class="btn btn-success">Accepter</a>
+        </li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

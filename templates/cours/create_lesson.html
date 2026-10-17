@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+
+{% block title %}Math_Edu: Ajouter Leçon {% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <!-- Titre du formulaire -->
+    <h1 class="text-center text-primary mb-4">📝 Créer un nouveau cours</h1>
+    
+    <!-- Formulaire de création de leçon -->
+    <form method="POST" enctype="multipart/form-data" class="needs-validation" novalidate>
+        {% csrf_token %}
+
+        <!-- Sélection du cours -->
+        <div class="mb-3">
+            <label for="course" class="form-label fw-bold">📚 Cours :</label>
+            <select id="course" name="course" class="form-select" required>
+                {% for course in courses %}
+                    <option value="{{ course.id }}">{{ course.title }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <!-- Titre de la leçon -->
+        <div class="mb-3">
+            <label for="title" class="form-label fw-bold">📝 Titre de la leçon :</label>
+            <input type="text" id="title" name="title" class="form-control" required>
+        </div>
+
+        <!-- Contenu de la leçon -->
+        <div class="mb-3">
+            <label for="content" class="form-label fw-bold">📄 Contenu :</label>
+            <textarea id="content" name="content" class="form-control" rows="5" required></textarea>
+        </div>
+
+        <!-- Vidéo de la leçon -->
+        <div class="mb-3">
+            <label for="profile_video" class="form-label fw-bold">🎥 Vidéo de profil :</label>
+            <input type="file" id="profile_video" name="profile_video" class="form-control">
+        </div>
+
+        <!-- Image -->
+        <div class="mb-3">
+            <label for="image" class="form-label fw-bold">📸 Image :</label>
+            <input type="file" id="image" name="image" class="form-control">
+        </div>
+
+        <!-- PDF -->
+        <div class="mb-3">
+            <label for="pdf" class="form-label fw-bold">📄 PDF :</label>
+            <input type="file" id="pdf" name="pdf" class="form-control">
+        </div>
+
+        <!-- Ordre de la leçon -->
+        <div class="mb-3">
+            <label for="order" class="form-label fw-bold">🔢 Ordre :</label>
+            <input type="number" id="order" name="order" class="form-control" value="0">
+        </div>
+
+        <!-- Bouton de soumission -->
+        <div class="text-center">
+            <button type="submit" class="btn btn-success btn-lg">Créer la leçon</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

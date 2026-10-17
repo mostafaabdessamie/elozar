@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-4">
+    <h2>Gestion des étudiants pour le cours: {{ course.title }}</h2>
+
+    {% if students %}
+    <table class="table table-striped">
+        <thead class="table-dark">
+            <tr>
+                <th>Nom</th>
+                <th>Email</th>
+                <th>Date d'inscription</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for enrollment in students %}
+            <tr>
+                <td>{{ enrollment.student.username }}</td>
+                <td>{{ enrollment.student.email }}</td>
+                <td>{{ enrollment.date_joined|date:"d M Y - H:i" }}</td>
+                <td>
+                    <form action="{% url 'unenroll_student' course.id %}" method="post" onsubmit="return confirm('Êtes-vous sûr de vouloir désinscrire cet étudiant?');">
+                        {% csrf_token %}
+                        <input type="hidden" name="student_id" value="{{ enrollment.student.id }}">
+                        <button type="submit" class="btn btn-danger btn-sm">Désinscrire</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p class="alert alert-warning">Aucun étudiant inscrit pour le moment.</p>
+    {% endif %}
+
+    <a href="{% url 'course_detail' course.id %}" class="btn btn-secondary">Retour au cours</a>
+</div>
+{% endblock %}

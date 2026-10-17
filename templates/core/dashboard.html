@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<style>
+.card-fr{border:2.5px solid #000;border-radius:18px;background:#fff;box-shadow:6px 6px 0 #000;transition:0.15s}
+.card-fr:hover{transform:translate(-2px,-2px);box-shadow:8px 8px 0 #000}
+.stat-icon{width:56px;height:56px;border-radius:14px;border:2.5px solid #000;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:800}
+.table-fr{border:2.5px solid #000;border-radius:16px;overflow:hidden}
+.table-fr thead th{background:#000;color:#FFC107;font-weight:800;text-transform:uppercase;font-size:0.8rem;border:0}
+.badge-fr{border:2px solid #000;border-radius:8px;font-weight:700}
+</style>
+
+<div class="container mt-4 mb-5">
+
+{% if is_admin %}
+  <div class="d-flex align-items-center gap-3 mb-4">
+    <div class="stat-icon bg-warning">⚡</div>
+    <div>
+      <h2 class="fw-bold mb-0" style="letter-spacing:-1px">Tableau de bord - Admin</h2>
+      <small class="text-muted fw-bold">ELOZAR • Vue d'ensemble</small>
+    </div>
+  </div>
+
+  <div class="row g-3">
+    <div class="col-md-4"><div class="card card-fr p-4"><div class="d-flex justify-content-between align-items-center"><div><small class="fw-bold text-muted text-uppercase">Total Élèves</small><div class="fs-2 fw-bold">{{ total_students }}</div></div><div class="stat-icon bg-primary text-white">🎓</div></div></div></div>
+    <div class="col-md-4"><div class="card card-fr p-4"><div class="d-flex justify-content-between align-items-center"><div><small class="fw-bold text-muted text-uppercase">Total Profs</small><div class="fs-2 fw-bold">{{ total_teachers }}</div></div><div class="stat-icon bg-success text-white">👨‍🏫</div></div></div></div>
+    <div class="col-md-4"><div class="card card-fr p-4"><div class="d-flex justify-content-between align-items-center"><div><small class="fw-bold text-muted text-uppercase">Total Groupes</small><div class="fs-2 fw-bold">{{ total_groups }}</div></div><div class="stat-icon bg-warning">👥</div></div></div></div>
+  </div>
+
+  <h4 class="fw-bold mt-5 mb-3">💰 Paiements récents</h4>
+  <div class="table-fr">
+    <table class="table table-hover mb-0">
+      <thead><tr><th>Élève</th><th>Montant</th><th>Date</th></tr></thead>
+      <tbody>
+        {% for p in recent_payments %}<tr><td class="fw-bold">{{ p.student.name }}</td><td><span class="badge badge-fr bg-warning text-dark">{{ p.amount_paid }} DH</span></td><td>{{ p.date|date:"d/m/Y" }}</td></tr>{% empty %}<tr><td colspan="3" class="text-center text-muted py-4">Aucun paiement</td></tr>{% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+{% elif is_prof %}
+  <div class="d-flex align-items-center gap-3 mb-2">
+    <div class="stat-icon bg-dark text-warning">👨‍🏫</div>
+    <div>
+      <h2 class="fw-bold mb-0">Bienvenue, Prof. {{ teacher.user.get_full_name|default:teacher.user.username }}</h2>
+      <small class="badge badge-fr bg-light text-dark">Matière: {{ teacher.subject }}</small>
+    </div>
+  </div>
+
+  <div class="row g-3 mt-3">
+    <div class="col-md-6"><div class="card card-fr p-4 bg-primary text-white" style="border-color:#000"><div class="d-flex justify-content-between"><div><small class="text-uppercase fw-bold opacity-75">Mes Groupes</small><div class="fs-2 fw-bold">{{ total_my_groups }}</div></div><div class="stat-icon bg-white text-dark">👥</div></div></div></div>
+    <div class="col-md-6"><div class="card card-fr p-4 bg-success text-white"><div class="d-flex justify-content-between"><div><small class="text-uppercase fw-bold opacity-75">Mes Élèves</small><div class="fs-2 fw-bold">{{ total_my_students }}</div></div><div class="stat-icon bg-white text-dark">🎓</div></div></div></div>
+  </div>
+
+  <div class="row g-4 mt-2">
+    <div class="col-md-6"><h5 class="fw-bold mt-3">📚 Mes Groupes</h5><div class="table-fr"><table class="table mb-0"><thead><tr><th>Nom</th><th>Élèves</th></tr></thead><tbody>{% for g in my_groups %}<tr><td class="fw-bold">{{ g.name }}</td><td><span class="badge badge-fr bg-dark text-white">{{ g.students.count }}</span></td></tr>{% empty %}<tr><td colspan="2" class="text-center text-muted py-3">Aucun groupe</td></tr>{% endfor %}</tbody></table></div></div>
+    <div class="col-md-6"><h5 class="fw-bold mt-3">👨‍🎓 Mes Élèves</h5><div class="table-fr"><table class="table mb-0"><thead><tr><th>Nom</th><th>Tél</th><th>Groupes</th></tr></thead><tbody>{% for s in my_students %}<tr><td class="fw-bold">{{ s.name }}</td><td>{{ s.phone }}</td><td>{% for gr in s.groups.all %}<span class="badge badge-fr bg-warning text-dark me-1">{{ gr.name }}</span>{% endfor %}</td></tr>{% empty %}<tr><td colspan="3" class="text-center text-muted py-3">Aucun élève</td></tr>{% endfor %}</tbody></table></div></div>
+  </div>
+
+{% elif is_student %}
+  <div class="d-flex align-items-center gap-3 mb-2">
+    <div class="stat-icon bg-info text-dark">🎓</div>
+    <div>
+      <h2 class="fw-bold mb-0">Bienvenue, {{ student.name|default:request.user.username }}</h2>
+      {% if student %}<small class="text-muted fw-bold">Niveau: {{ student.level }} • {{ student.phone }}</small>{% endif %}
+    </div>
+  </div>
+
+  <div class="row g-3 mt-3">
+    <div class="col-md-6"><div class="card card-fr p-4 bg-info"><div class="d-flex justify-content-between"><div><small class="fw-bold text-uppercase">Mes Groupes</small><div class="fs-2 fw-bold">{{ total_my_groups }}</div></div><div class="stat-icon bg-white">👥</div></div></div></div>
+    <div class="col-md-6"><div class="card card-fr p-4 bg-warning"><div class="d-flex justify-content-between"><div><small class="fw-bold text-uppercase">Total Payé</small><div class="fs-2 fw-bold">{{ total_paid }} DH</div></div><div class="stat-icon bg-dark text-white">💰</div></div></div></div>
+  </div>
+
+  <h5 class="fw-bold mt-4">📚 Mes Groupes</h5>
+  <div class="table-fr"><table class="table mb-0"><thead><tr><th>Groupe</th><th>Prof</th><th>Prix</th></tr></thead><tbody>{% for g in my_groups %}<tr><td class="fw-bold">{{ g.name }}</td><td>{{ g.teacher.user.get_full_name|default:g.teacher.user.username }}</td><td><span class="badge badge-fr bg-dark text-warning">{{ g.monthly_price }} DH</span></td></tr>{% empty %}<tr><td colspan="3" class="text-center text-muted py-3">Vous n'êtes dans aucun groupe</td></tr>{% endfor %}</tbody></table></div>
+
+  <h5 class="fw-bold mt-4">💳 Mes Paiements</h5>
+  <div class="table-fr"><table class="table mb-0"><thead><tr><th>Date</th><th>Groupe</th><th>Montant</th></tr></thead><tbody>{% for p in my_payments %}<tr><td>{{ p.date|date:"d/m/Y" }}</td><td class="fw-bold">{{ p.group.name }}</td><td><span class="badge badge-fr bg-success text-white">{{ p.amount_paid }} DH</span></td></tr>{% empty %}<tr><td colspan="3" class="text-center text-muted py-3">Aucun paiement</td></tr>{% endfor %}</tbody></table></div>
+{% endif %}
+
+</div>
+{% endblock %}

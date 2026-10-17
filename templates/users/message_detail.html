@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block title %}Détails du message{% endblock %}
+
+{% block content %}
+<h1 class="text-center mb-4">Détails du message</h1>
+<div class="card">
+    <div class="card-body">
+        <h5 class="card-title">De : {{ message.sender.username }}</h5>
+        <p class="card-text">À : {{ message.receiver.username }}</p>
+        <p class="card-text">Contenu : {{ message.content }}</p>
+        <p class="card-text">Date : {{ message.timestamp }}</p>
+        <a href="{% url 'message_list' %}" class="btn btn-secondary">Retour</a>
+    </div>
+</div>
+{% endblock %}

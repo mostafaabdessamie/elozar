@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% load widget_tweaks %}
+
+{% block title %}MathEdu: Cours Ajouter Question{% endblock %}
+
+{% block content %}
+<form method="POST">
+    {% csrf_token %}
+    
+    <div class="form-group">
+        <label for="id_text">{{ form.text.label }}</label>
+        {{ form.text|add_class:"form-control" }}
+    </div>
+
+    <div class="form-group">
+        <label for="id_points">{{ form.points.label }}</label>
+        {{ form.points }}
+    </div>
+
+    <br>
+    <div class="form-group">
+        <label for="id_choice_1">Choice 1</label>
+        <input type="text" name="choice_1" id="id_choice_1" class="form-control">
+        <input type="checkbox" name="is_correct_1" id="is_correct_1"> Correct
+    </div>
+
+    <div class="form-group">
+        <label for="id_choice_2">Choice 2</label>
+        <input type="text" name="choice_2" id="id_choice_2" class="form-control">
+        <input type="checkbox" name="is_correct_2" id="is_correct_2"> Correct
+    </div>
+
+    <div class="form-group">
+        <label for="id_choice_3">Choice 3</label>
+        <input type="text" name="choice_3" id="id_choice_3" class="form-control">
+        <input type="checkbox" name="is_correct_3" id="is_correct_3"> Correct
+    </div>
+
+    <div class="form-group">
+        <label for="id_choice_4">Choice 4</label>
+        <input type="text" name="choice_4" id="id_choice_4" class="form-control">
+        <input type="checkbox" name="is_correct_4" id="is_correct_4"> Correct
+    </div>
+
+    <button type="submit" class="btn btn-primary">
+            Ajouter la question 
+    </button>
+</form>
+
+{% endblock %}

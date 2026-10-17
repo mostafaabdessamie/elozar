@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block title %} Math_Edu: Leços {% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="text-center text-primary mb-4">📖 Leçons disponibles</h1>
+    
+    <div class="row">
+        {% for lesson in lessons %}
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card shadow-lg border-0 h-100">
+                    <div class="card-body">
+                        <h5 class="card-title text-center text-dark">{{ lesson.title }}</h5>
+                        <p class="text-muted text-center">
+                            📚 Cours : <strong>{{ lesson.course }}</strong>
+                        </p>
+                        
+                        <!-- Bouton pour voir la leçon -->
+                        <div class="d-grid">
+                            <a href="{% url 'lesson_detail' lesson.id %}" class="btn btn-primary btn-sm">
+                                🎥 Voir la leçon
+                            </a>
+                            <a href="#" class="btn btn-primary btn-sm">
+                                📚 Voir les execices
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Icônes pour indiquer la présence d’une vidéo ou d’un PDF -->
+                    <div class="card-footer bg-light text-center">
+                        {% if lesson.video %}
+                            <span class="badge bg-success">🎬 Vidéo disponible</span>
+                        {% endif %}
+                        {% if lesson.pdf %}
+                            <span class="badge bg-danger">📄 PDF inclus</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <p class="text-center text-muted">Aucune leçon disponible.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

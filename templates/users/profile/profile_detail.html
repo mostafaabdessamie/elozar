@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <!-- قسم معلومات المستخدم -->
+        <div class="col-md-4">
+            <div class="card text-center shadow-lg">
+                <div class="card-body">
+                    <!-- صورة البروفايل مع تحقق -->
+                    {% if profile.user.profile_picture %}
+                        <img src="{{ profile.user.profile_picture.url }}" class="rounded-circle img-thumbnail mb-3" 
+                             alt="Profile Image" style="width: 150px; height: 150px; object-fit: cover;">
+                    {% else %}
+                        <img src="/static/images/default_profile.png" class="rounded-circle img-thumbnail mb-3" 
+                             alt="Profile Image" style="width: 150px; height: 150px; object-fit: cover;">
+                    {% endif %}
+
+                    <h3 class="card-title">{{ profile.user.username }}</h3>
+                    <p class="text-muted">{{ profile.bio|default:"Pas de bio disponible" }}</p>
+
+                    <p><i class="fas fa-map-marker-alt"></i> {{ profile.location|default:"Non spécifié" }}</p>
+                    <p><i class="fas fa-birthday-cake"></i> 
+                        {% if profile.birth_date %}
+                            {{ profile.birth_date|date:"d M Y" }}
+                        {% else %}
+                            Non spécifié
+                        {% endif %}
+                    </p>
+
+                    <a href="{% url 'profile_update' %}" class="btn btn-primary btn-sm mt-2">
+                        <i class="fas fa-edit"></i> Modifier le Profil
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- قسم الدردشات والأنشطة -->
+        <div class="col-md-8">
+            <div class="card shadow-lg">
+                <div class="card-body">
+                    <h4 class="text-primary"><i class="fas fa-comments"></i> Amis</h4>
+                    <ul class="list-group mb-3">
+                        {% for friend in friends %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <a href="{% url 'profile_detail' friend.pk %}">{{ friend.username }}</a>
+                        </li>
+                        {% empty %}
+                        <li class="list-group-item text-muted">Aucun ami pour le moment.</li>
+                        {% endfor %}
+                    </ul>
+
+                    <h4 class="text-success"><i class="fas fa-user-plus"></i> Demandes d'amis</h4>
+                    <ul class="list-group mb-3">
+                        {% for request in friend_requests %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <span>Demande de {{ request.username }}</span>
+                            <a href="{% url 'friend_request_accept' request.pk %}" class="btn btn-success btn-sm">Accepter</a>
+                        </li>
+                        {% empty %}
+                        <li class="list-group-item text-muted">Aucune demande d'ami.</li>
+                        {% endfor %}
+                    </ul>
+
+                    <h4 class="text-info"><i class="fas fa-envelope"></i> Messages</h4>
+                    <ul class="list-group mb-3">
+                        {% for message in messges %}
+                        <li class="list-group-item">
+                            <p><strong>De:</strong> {{ message.sender.username }}</p>
+                            <p>{{ message.content }}</p>
+                            <small class="text-muted">{{ message.timestamp }}</small>
+                        </li>
+                        {% empty %}
+                        <li class="list-group-item text-muted">Aucun message pour le moment.</li>
+                        {% endfor %}
+                    </ul>
+
+                    <!-- إرسال رسالة جديدة -->
+                    <h4 class="text-primary"><i class="fas fa-paper-plane"></i> Envoyer un message</h4>
+                    <form method="post" action="{% url 'send_message' %}">
+                        {% csrf_token %}
+                        {{ message_form.as_p }}
+                        <button type="submit" class="btn btn-primary btn-block">Envoyer</button>
+                    </form>
+
+                    <!-- إرسال طلب صداقة جديد -->
+                    <h4 class="text-secondary mt-4"><i class="fas fa-user-friends"></i> Envoyer une demande d'ami</h4>
+                    <form method="post" action="{% url 'send_friend_request' %}">
+                        {% csrf_token %}
+                        {{ friend_request_form.as_p }}
+                        <button type="submit" class="btn btn-secondary btn-block">Envoyer</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<style>
+.hero-fr{background:#fff;border-radius:24px;border:2px solid #000;overflow:hidden}
+.btn-yellow{background:#FFC107;color:#000;font-weight:800;border:2px solid #000}
+.btn-yellow:hover{background:#000;color:#FFC107}
+.service-fr{border-radius:20px;border:2px solid #000;transition:.3s}
+.service-fr:hover{transform:translateY(-6px);box-shadow:8px 8px 0 #000}
+</style>
+
+
+<!-- HERO FR -->
+<div class="hero-fr p-4 p-lg-5 mb-5">
+  <div class="row align-items-center">
+    <div class="col-lg-6">
+      <span class="badge bg-warning text-dark mb-3">Centre éducatif agréé depuis 2018</span>
+      <h1 class="display-5 fw-bold">L'éducation sous une forme <span class="text-warning">amusante</span></h1>
+      <p class="mt-3">Centre Elozar pour le soutien scolaire, les langues, le conseil et le développement personnel. Des méthodes innovantes pour apprendre avec plaisir et réussite.</p>
+      <div class="d-flex gap-3 mt-4">
+        <a href="{% url 'group_list' %}" class="btn btn-yellow">→ Découvrir nos formations</a>
+        <a href="#" class="btn btn-outline-dark">Réserver une consultation gratuite</a>
+      </div>
+      <div class="row mt-4 text-start small">
+        <div class="col-4"><strong>500+</strong><br>Élèves accompagnés</div>
+        <div class="col-4"><strong>95%</strong><br>de réussite</div>
+        <div class="col-4"><strong>20+</strong><br>Formateurs experts</div>
+      </div>
+    </div>
+    <div class="col-lg-6 mt-4 mt-lg-0">
+      <img src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=800" class="img-fluid rounded-4 border border-2 border-dark">
+    </div>
+  </div>
+</div>
+
+<h2 class="text-center fw-bold">Nos Services</h2>
+<p class="text-center text-muted mb-4">Un accompagnement complet pour réussir et s'épanouir à chaque étape</p>
+
+<div class="row g-4 mb-5">
+  <div class="col-md-4"><div class="card service-fr p-4 h-100"><h5 class="fw-bold">Soutien scolaire</h5><p class="small text-muted">Accompagnement du primaire au lycée, toutes matières: mathématiques, physique, français, sciences.</p><ul class="small"><li>Cours individuels ou en petits groupes</li><li>Préparation Brevet, Bac, Concours</li></ul></div></div>
+  <div class="col-md-4"><div class="card service-fr p-4 h-100"><h5 class="fw-bold">Cours de langues</h5><p class="small text-muted">Apprenez l'anglais, le français et l'arabe avec des formateurs natifs.</p><ul class="small"><li>Anglais - Français - Arabe</li><li>Préparation TOEFL, IELTS, DELF</li></ul></div></div>
+  <div class="col-md-4"><div class="card service-fr p-4 h-100"><h5 class="fw-bold">Conseil & Développement personnel</h5><p class="small text-muted">Coaching scolaire et orientation pour construire votre projet d'avenir en confiance.</p><ul class="small"><li>Orientation scolaire & pro</li><li>Gestion du stress & confiance</li></ul></div></div>
+</div>
+
+<div class="bg-dark text-white p-4 rounded-4 d-flex justify-content-between align-items-center flex-wrap">
+  <div><h4 class="fw-bold text-warning">Prêt à réussir avec ELOZAR ?</h4><p class="mb-0 small">Rejoignez notre centre et transformez votre parcours scolaire</p></div>
+  <div class="d-flex gap-2 mt-3 mt-md-0"><a class="btn btn-warning fw-bold">→ Commencer maintenant</a><a class="btn btn-outline-light">Parler à un conseiller</a></div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+
+{% load static %}
+{% block content %}
+  <div class="container mt-5 text-center">
+      <div class="text-center mb-5">
+          <h1 class="text-primary display-3 fw-bold">Bienvenue sur <span class="text-danger">ELOZAR</span></h1>
+          <p class="lead">Apprenez les mathématiques de manière interactive et amusante!</p>
+          {% if user.is_authenticated %}
+            <p class="text-success fw-bold">Bienvenue, {{ user.username }} !</p>
+          {% else %}
+            <a href="{% url 'login' %}" class="btn btn-primary btn-lg me-2">Connexion</a>
+            <a href="{% url 'customuser_create' %}" class="btn btn-outline-secondary btn-lg">Inscription</a>
+          {% endif %}
+      </div>
+      
+      <div class="mb-4">
+          <img src="{% static 'image/math_welcome.jpg' %}" alt="Math Learning" class="img-fluid rounded shadow" style="max-width: 80%;">
+      </div>
+
+      <div class="mt-5">
+          <a href="{% url 'course_list' %}" class="btn btn-info btn-lg">Cours</a>
+          <a href="{% url 'home_chat' %}" class="btn btn-danger btn-lg">Intéractions</a>
+      </div>
+
+      <div class="mt-5 text-start">
+          <h2 class="text-primary">📖 Pourquoi étudier les mathématiques ?</h2>
+          <p class="lead">Les mathématiques sont partout autour de nous : dans la nature, la technologie, et même dans les jeux que nous aimons! Elles nous aident à résoudre des problèmes, à penser de manière logique et à développer notre créativité.</p>
+          
+          <h2 class="text-success mt-4">🔢 Les mathématiques dans la vie quotidienne</h2>
+          <p class="lead">Saviez-vous que les mathématiques sont utilisées dans la cuisine, le sport et même dans la musique ? Chaque jour, nous comptons, mesurons et analysons des données sans même nous en rendre compte!</p>
+          
+          <h2 class="text-warning mt-4">🧩 Défi du jour</h2>
+          <p class="lead">Trouvez un nombre qui est à la fois carré parfait et cube parfait! Répondez dans les commentaires ci-dessous! 😉</p>
+
+          <h2 class="text-info mt-5">✖️ Table de Multiplication</h2>
+          <table class="table table-bordered table-striped mt-3">
+              <thead class="table-dark">
+                  <tr>
+                      <th>&times;</th>
+                      {% for j in table_multiplication.0 %}
+                          <th>{{ forloop.counter }}</th>
+                      {% endfor %}
+                  </tr>
+              </thead>
+              <tbody>
+                  {% for row in table_multiplication %}
+                  <tr>
+                      <th class="table-dark">{{ forloop.counter }}</th>
+                      {% for value in row %}
+                          <td>{{ value }}</td>
+                      {% endfor %}
+                  </tr>
+                  {% endfor %}
+              </tbody>
+          </table>
+
+
+          <h2 class="text-primary mt-5">📐 Découvrez le monde fascinant de la géométrie</h2>
+          <p class="lead">La géométrie est une branche passionnante des mathématiques qui étudie les formes, les tailles et les positions des objets dans l'espace. Elle est essentielle pour l'architecture, le design et même l'astronomie!</p>
+          
+          <h2 class="text-success mt-4">🔺 Les formes géométriques</h2>
+          <p class="lead">Carrés, triangles, cercles... Chaque forme a ses propriétés uniques! Par exemple, un triangle équilatéral a trois côtés égaux et trois angles égaux, tandis qu'un cercle n'a ni début ni fin!</p>
+          
+          <h2 class="text-warning mt-4">🏛️ La géométrie dans la réalité</h2>
+          <p class="lead">De la construction des pyramides à la conception des ponts modernes, la géométrie joue un rôle clé dans notre monde. Elle nous aide à comprendre comment structurer des bâtiments solides et esthétiques.</p>
+      </div>
+  </div>
+{% endblock %}

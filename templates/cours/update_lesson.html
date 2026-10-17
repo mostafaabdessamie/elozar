@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% block title %}Math_Edu: Modifier le Leçon{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="card shadow-lg border-0">
+        <div class="card-body">
+            <h1 class="text-center text-primary mb-4">✏ Modifier la leçon</h1>
+
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                <!-- Titre -->
+                <div class="mb-3">
+                    <label class="form-label fw-bold">📌 Titre :</label>
+                    <input type="text" name="title" class="form-control" value="{{ lesson.title }}" required>
+                </div>
+
+                <!-- Contenu -->
+                <div class="mb-3">
+                    <label class="form-label fw-bold">📖 Contenu :</label>
+                    <textarea name="content" class="form-control" rows="5" required>{{ lesson.content }}</textarea>
+                </div>
+
+                <!-- Vidéo -->
+                <div class="mb-3">
+                    <label class="form-label fw-bold">🎬 Vidéo :</label>
+                    <input type="file" name="profile_video" class="form-control">
+                    {% if lesson.video %}
+                        <p class="mt-2">Vidéo actuelle : <a href="{{ lesson.video.url }}" target="_blank">Voir la vidéo</a></p>
+                    {% endif %}
+                </div>
+
+                <!-- Image -->
+                <div class="mb-3">
+                    <label class="form-label fw-bold">🖼 Image :</label>
+                    <input type="file" name="image" class="form-control">
+                    {% if lesson.image %}
+                        <img src="{{ lesson.image.url }}" class="img-thumbnail mt-2" width="150">
+                    {% endif %}
+                </div>
+
+                <!-- PDF -->
+                <div class="mb-3">
+                    <label class="form-label fw-bold">📄 PDF :</label>
+                    <input type="file" name="pdf" class="form-control">
+                    {% if lesson.pdf %}
+                        <p class="mt-2">PDF actuel : <a href="{{ lesson.pdf.url }}" target="_blank">Télécharger</a></p>
+                    {% endif %}
+                </div>
+
+                <!-- Ordre -->
+                <div class="mb-3">
+                    <label class="form-label fw-bold">🔢 Ordre :</label>
+                    <input type="number" name="order" class="form-control" value="{{ lesson.order }}">
+                </div>
+
+                <!-- Boutons d'action -->
+                <div class="text-center">
+                    <button type="submit" class="btn btn-primary">💾 Mettre à jour</button>
+                    <a href="{% url 'lesson_detail' lesson.id %}" class="btn btn-secondary">↩ Annuler</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

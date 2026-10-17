@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block title %}MathEdu: Résultat du Quiz {% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="text-center text-success">🎉 Résultat du Quiz</h1>
+    <h3 class="text-center">Votre score : <strong>{{ student_score.score }}</strong> points</h3>
+
+    <div class="text-center mt-4">
+        <a href="{% url 'lesson_detail' lesson.id %}" class="btn btn-primary">Retour à la leçon</a>
+    </div>
+</div>
+{% endblock %}

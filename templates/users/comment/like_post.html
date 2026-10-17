@@ -1,0 +1,8 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-5">
+    <h1>J'aime ce post</h1>
+    <p>Vous avez aimé le post de {{ post.user.username }}.</p>
+    <a href="{% url 'post_detail' post.pk %}" class="btn btn-primary">Retour au post</a>
+</div>
+{% endblock %}

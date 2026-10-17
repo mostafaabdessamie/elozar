@@ -1,0 +1,53 @@
+{% extends "admin/base.html" %}
+{% load static %}
+
+{% block title %}Elozar Centre{% endblock %}
+
+{% block extrahead %}
+{{ block.super }}
+<link rel="icon" href="{% static 'logo.jpg' %}">
+{% endblock %}
+
+{% block branding %}
+<div style="display:flex; align-items:center; gap:12px;">
+    <img src="{% static 'logo.jpg' %}" alt="Elozar" 
+         style="width:46px; height:46px; border-radius:13px; object-fit:cover; border:2px solid #fff; box-shadow:0 4px 12px rgba(0,0,0,0.12); background:#fff;"
+         onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+    <div style="display:none; width:46px; height:46px; border-radius:13px; background:#111; color:#FFC107; align-items:center; justify-content:center; font-weight:900; font-size:22px; box-shadow:0 4px 12px rgba(0,0,0,0.12);">E</div>
+    
+    <div style="line-height:1.15">
+        <div style="font-weight:900; font-size:19px; color:#111; letter-spacing:-0.3px;">Elozar Centre</div>
+        <div style="font-size:10px; font-weight:800; color:#FFC107; letter-spacing:1.2px; background:#111; display:inline-block; padding:2px 8px; border-radius:20px; margin-top:3px;">CENTRE DE SOUTIEN</div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extrastyle %}
+{{ block.super }}
+<style>
+#header{background:#fff !important; padding:14px 28px !important; border-bottom:1px solid #F3F4F6 !important;}
+#header a{color:#111 !important}
+#user-tools{font-weight:600 !important; color:#6B7280 !important; font-size:13px}
+#user-tools a{color:#111 !important; background:#F9FAFB; padding:6px 14px; border-radius:20px; font-weight:700 !important}
+
+body, #container{background:#F9FAFB !important}
+#content{padding:28px !important}
+
+div.breadcrumbs{background:#fff !important; border:1px solid #E5E7EB !important; border-radius:100px; padding:10px 20px !important; font-size:13px; font-weight:500; color:#111 !important; margin-bottom:20px !important}
+div.breadcrumbs a{color:#111 !important; font-weight:700}
+
+.module{background:#fff !important; border:1px solid #E5E7EB !important; border-radius:18px !important; box-shadow:0 2px 10px rgba(0,0,0,0.04) !important; overflow:hidden; margin-bottom:22px}
+.module h2, .module caption{background:#fff !important; color:#111 !important; font-weight:800 !important; font-size:12px !important; text-transform:uppercase; letter-spacing:0.6px; padding:16px 22px !important; border-bottom:1px solid #F3F4F6 !important}
+.module table td, .module table th{padding:14px 22px !important; font-size:13px !important; border-bottom:1px solid #F9FAFB !important}
+.module a{color:#111 !important; font-weight:600 !important}
+.addlink, .changelink{background:#FEF3C7 !important; color:#92400E !important; padding:6px 14px !important; border-radius:20px !important; font-size:12px !important; font-weight:700 !important; border:1px solid #FDE68A !important; float:right}
+.changelink{background:#F3F4F6 !important; color:#374151 !important; border-color:#E5E7EB !important}
+
+#changelist{background:#fff !important; border:1px solid #E5E7EB !important; border-radius:18px !important; overflow:hidden}
+#toolbar{background:#F9FAFB !important; padding:14px 20px !important; border-bottom:1px solid #E5E7EB !important}
+.object-tools{margin-top:-45px !important}
+.object-tools a{background:#111 !important; color:#fff !important; border-radius:24px !important; padding:10px 20px !important; font-weight:700 !important}
+.submit-row{background:#fff !important; border:1px solid #E5E7EB !important; border-top:none !important; border-radius:0 0 18px 18px; padding:16px 22px !important}
+input[type=submit].default{background:#FFC107 !important; color:#000 !important; border-radius:24px !important; font-weight:800 !important}
+</style>
+{% endblock %}

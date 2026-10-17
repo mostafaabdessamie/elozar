@@ -1,0 +1,201 @@
+{% load static %}
+{% load humanize %}
+<!DOCTYPE html>
+<html lang="fr" class="h-100">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="{% static 'logo.jpg' %}">
+<title>{% block title %}ELOZAR - Centre de Soutien{% endblock %}</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+<style>
+:root{ --elozar-yellow:#FFC107; }
+.navbar-brand{ letter-spacing: 1px; }
+.nav-link.active{ color: var(--elozar-yellow) !important; font-weight: 700; }
+.avatar-sm{ width:36px; height:36px; object-fit:cover; }
+body{ display:flex; flex-direction:column; min-height:100vh; }
+main{ flex:1 0 auto; }
+.notif-dropdown{ width:380px; border-radius:18px; overflow:hidden; }
+</style>
+{% block extra_css %}{% endblock %}
+</head>
+<body class="bg-light h-100">
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark px-3 px-lg-4 shadow-sm sticky-top">
+  <div class="container-fluid">
+    <a class="navbar-brand fw-bold d-flex align-items-center gap-2" href="{% url 'home' %}">
+      <img src="{% static 'logo.jpg' %}" alt="ELOZAR" style="height:38px; width:auto; object-fit:contain; border-radius:8px;">
+      <span>ELOZAR</span>
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="mainNav">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item"><a class="nav-link {% if request.resolver_match.url_name == 'home' %}active{% endif %}" href="{% url 'home' %}"><i class="bi bi-speedometer2"></i> Accueil</a></li>
+        <li class="nav-item"><a class="nav-link {% if 'course' in request.path %}active{% endif %}" href="{% url 'course_list' %}"><i class="bi bi-journal-bookmark"></i> Cours</a></li>
+        <li class="nav-item"><a class="nav-link {% if 'livre' in request.path %}active{% endif %}" href="{% url 'livre_list' %}"><i class="bi bi-book"></i> Livres</a></li>
+        <li class="nav-item"><a class="nav-link {% if 'teacher' in request.path %}active{% endif %}" href="{% url 'teacher_list' %}"><i class="bi bi-person-video3"></i> Profs</a></li>
+        <li class="nav-item"><a class="nav-link {% if 'about' in request.path %}active{% endif %}" href="{% url 'about' %}"><i class="bi bi-info-circle"></i> About</a></li>
+        {% if user.is_staff %}
+        <li class="nav-item"><a class="nav-link {% if 'payment' in request.path %}active{% endif %}" href="{% url 'payment_list' %}"><i class="bi bi-cash-coin"></i> Activité</a></li>
+        {% endif %}
+      </ul>
+
+      <form class="d-flex me-3 my-2 my-lg-0" action="{% url 'global_search' %}" method="GET" style="min-width:260px;">
+        <input class="form-control form-control-sm me-2 rounded-pill" type="search" name="q" placeholder="Rechercher..." value="{{ request.GET.q|default:'' }}">
+        <button class="btn btn-outline-light btn-sm rounded-circle" type="submit"><i class="bi bi-search"></i></button>
+      </form>
+
+      {% if user.is_authenticated %}
+      <div class="dropdown me-3">
+        <a class="btn btn-dark position-relative rounded-circle border-0" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="width:42px; height:42px; display:flex; align-items:center; justify-content:center; background:#2d2d2d;">
+          <i class="bi bi-bell-fill fs-5 text-white"></i>
+          {% if notif_count %}
+          <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size:10px; min-width:20px;">{{ notif_count }}</span>
+          {% endif %}
+        </a>
+        <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0 mt-3 p-0 notif-dropdown">
+          <li class="d-flex justify-content-between align-items-center p-3 bg-light">
+            <h6 class="m-0 fw-bold">Notifications</h6>
+            {% if notif_count %}<span class="badge bg-warning text-dark rounded-pill">{{ notif_count }}</span>{% endif %}
+          </li>
+          <li><hr class="dropdown-divider m-0"></li>
+          {% for n in notif_list %}
+          <li>
+            <a class="dropdown-item d-flex gap-3 py-3 {% if not n.read %}bg-white{% else %}bg-light opacity-75{% endif %}" href="{% url 'notification_click' n.id %}" style="white-space:normal;">
+              <div class="bg-warning rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width:40px; height:40px;"><i class="bi bi-bell-fill text-dark"></i></div>
+              <div style="line-height:1.3; flex:1;">
+                <div class="fw-bold small text-dark">{{ n.message }}</div>
+                <div class="text-muted small" style="white-space:normal;">{{ n.content|truncatechars:70 }}</div>
+                <small class="text-muted" style="font-size:11px;">{{ n.created_at|naturaltime }}</small>
+              </div>
+              {% if not n.read %}<span class="bg-primary rounded-circle" style="width:8px; height:8px; margin-top:8px;"></span>{% endif %}
+            </a>
+          </li>
+          {% empty %}
+          <li class="text-center py-5"><i class="bi bi-bell-slash fs-1 text-muted"></i><p class="small text-muted mt-2">Aucune notification</p></li>
+          {% endfor %}
+          <li><hr class="dropdown-divider m-0"></li>
+          <li><a class="dropdown-item text-center py-2 fw-bold small text-primary" href="{% url 'notification_list' %}">Voir tout</a></li>
+        </ul>
+      </div>
+      {% endif %}
+
+      <ul class="navbar-nav ms-auto">
+        {% if user.is_authenticated %}
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle d-flex align-items-center gap-2 bg-white bg-opacity-10 rounded-pill px-2 py-1 pe-3" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            {% if user.profile_picture %}
+            <img src="{{ user.profile_picture.url }}" alt="Avatar" class="rounded-circle border border-2 border-warning avatar-sm">
+            {% else %}
+            <div class="rounded-circle bg-warning d-flex align-items-center justify-content-center border border-2 border-warning avatar-sm"><i class="bi bi-person-fill text-dark"></i></div>
+            {% endif %}
+            <span class="fw-bold small">{{ user.username }}</span>
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2">
+            <li><a class="dropdown-item" href="{% url 'dashboard' %}"><i class="bi bi-speedometer2 me-2"></i>Dashboard</a></li>
+            {% if user.is_staff %}
+            <li><hr class="dropdown-divider"></li>
+            <li><h6 class="dropdown-header">Gestion</h6></li>
+            <li><a class="dropdown-item" href="{% url 'teacher_list' %}">Liste des profs</a></li>
+            <li><a class="dropdown-item" href="{% url 'add_teacher' %}">Ajouter prof</a></li>
+            <li><a class="dropdown-item" href="{% url 'student_list' %}">Liste des élèves</a></li>
+            <li><a class="dropdown-item" href="{% url 'add_student' %}">Ajouter élève</a></li>
+            <li><a class="dropdown-item" href="{% url 'group_list' %}">Liste des groupes</a></li>
+            <li><a class="dropdown-item" href="{% url 'add_group' %}">Ajouter groupe</a></li>
+            {% endif %}
+            {% if user.user_type == 2 %}
+            <li><hr class="dropdown-divider"></li>
+            <li><h6 class="dropdown-header">Espace Prof</h6></li>
+            <li><a class="dropdown-item" href="{% url 'create_course' %}"><i class="bi bi-journal-plus me-2"></i>Ajouter un cours</a></li>
+            <li><a class="dropdown-item" href="{% url 'livre_create' %}"><i class="bi bi-book me-2"></i>Ajouter un livre</a></li>
+            {% endif %}
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" href="{% url 'customuser_detail' user.id %}">Profile</a></li>
+            <li><a class="dropdown-item" href="{% url 'home_chat' %}">Mon Compte</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item text-danger" href="{% url 'logout' %}">Déconnexion</a></li>
+          </ul>
+        </li>
+        {% else %}
+        <li class="nav-item d-flex gap-2">
+          <a href="{% url 'login' %}" class="btn btn-warning btn-sm fw-bold px-3 rounded-pill">Connexion</a>
+          <a href="{% url 'customuser_create' %}" class="btn btn-outline-light btn-sm fw-bold px-3 rounded-pill">Inscription</a>
+        </li>
+        {% endif %}
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<main class="container mt-4">
+  {% if messages %}
+  {% for message in messages %}
+  <div class="alert alert-{{ message.tags }} alert-dismissible fade show shadow-sm" role="alert">
+    {{ message }}
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+  </div>
+  {% endfor %}
+  {% endif %}
+  {% block content %}{% endblock %}
+</main>
+
+<footer class="bg-black text-white mt-auto pt-5 pb-4 border-top border-warning border-4">
+  <div class="container">
+    <div class="row g-4 mb-4">
+      <div class="col-lg-4 text-center text-lg-start">
+        <div class="d-flex align-items-center justify-content-center justify-content-lg-start gap-3 mb-3">
+          <img src="{% static 'logo.jpg' %}" alt="ELOZAR Logo" style="height:65px; width:65px; object-fit:cover; border-radius:12px; border:2px solid #FFC107; background:white; padding:3px;">
+          <div class="text-start">
+            <h4 class="fw-bold m-0" style="letter-spacing:1px;">ELOZAR</h4>
+            <small class="text-warning fw-bold" style="letter-spacing:3px; font-size:11px;">EDUCATION CENTER</small>
+            <div class="small text-white-50" style="font-size:11px;">L'éducation amusante</div>
+          </div>
+        </div>
+        <p class="text-white-50 small mt-3">Centre de Soutien Scolaire • Langues • Conseil d'orientation.<br> On vous accompagne vers la réussite.</p>
+      </div>
+      <div class="col-lg-2 col-6">
+        <h6 class="fw-bold text-warning mb-3">Explorer</h6>
+        <ul class="list-unstyled">
+          <li class="mb-2"><a href="{% url 'home' %}" class="text-white-50 text-decoration-none small"><i class="bi bi-house me-1"></i> Accueil</a></li>
+          <li class="mb-2"><a href="{% url 'course_list' %}" class="text-white-50 text-decoration-none small"><i class="bi bi-journal-bookmark me-1"></i> Cours</a></li>
+          <li class="mb-2"><a href="{% url 'livre_list' %}" class="text-white-50 text-decoration-none small"><i class="bi bi-book me-1"></i> Livres</a></li>
+          <li class="mb-2"><a href="{% url 'teacher_list' %}" class="text-white-50 text-decoration-none small"><i class="bi bi-people me-1"></i> Profs</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-2 col-6">
+        <h6 class="fw-bold text-warning mb-3">Infos</h6>
+        <ul class="list-unstyled">
+          <li class="mb-2"><a href="{% url 'about' %}" class="text-white-50 text-decoration-none small">À propos</a></li>
+          <li class="mb-2"><a href="#" class="text-white-50 text-decoration-none small">Contact</a></li>
+          <li class="mb-2"><a href="https://elozar.com" class="text-warning text-decoration-none small fw-bold">elozar.com</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-4">
+        <h6 class="fw-bold text-warning mb-3"><i class="bi bi-geo-alt-fill me-2"></i>Taourirt</h6>
+        <div class="bg-white bg-opacity-10 p-3 rounded-3">
+          <p class="small mb-2"><i class="bi bi-geo-alt text-warning me-2"></i> 157 Tri9 Madrassat L Wahda<br><span class="ms-4">Hay L Massira, Hda Saydaliyat L Hissin</span></p>
+          <p class="small mb-1 text-white-50"><i class="bi bi-telephone text-warning me-2"></i> +212 6 XX XX XX XX</p>
+          <p class="small mb-0 text-white-50"><i class="bi bi-envelope text-warning me-2"></i> contact@elozar.com</p>
+        </div>
+        <div class="d-flex gap-2 mt-3">
+          <a href="https://web.facebook.com/mstfy.bdalsmy.383501" class="btn btn-warning btn-sm rounded-circle" style="width:38px;height:38px;display:flex;align-items:center;justify-content:center;"><i class="bi bi-facebook text-dark"></i></a>
+          <a href="#" class="btn btn-warning btn-sm rounded-circle" style="width:38px;height:38px;display:flex;align-items:center;justify-content:center;"><i class="bi bi-instagram text-dark"></i></a>
+          <a href="#" class="btn btn-warning btn-sm rounded-circle" style="width:38px;height:38px;display:flex;align-items:center;justify-content:center;"><i class="bi bi-whatsapp text-dark"></i></a>
+        </div>
+      </div>
+    </div>
+    <hr class="border-secondary opacity-25">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-center gap-2">
+      <div class="d-flex align-items-center gap-2"><img src="{% static 'logo.jpg' %}" height="22" style="border-radius:4px;"><small class="text-white-50">© 2026 ELOZAR — Tous droits réservés</small></div>
+      <small class="text-white-50">Centre de Soutien • Langues • Conseil</small>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>

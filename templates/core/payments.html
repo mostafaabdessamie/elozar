@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+{% load humanize %}
+{% block content %}
+
+<style>
+.card-fr{border:2.5px solid #000;border-radius:16px;background:#fff;box-shadow:6px 6px 0 #000}
+.table-fr{border:2.5px solid #000;border-radius:16px;overflow:hidden}
+.table-fr thead th{background:#000;color:#FFC107;font-weight:800;text-transform:uppercase;font-size:0.8rem;border:0}
+.badge-fr{border:2px solid #000;border-radius:10px;font-weight:800;padding:7px 12px}
+.btn-yellow{background:#FFC107;color:#000;font-weight:800;border:2.5px solid #000;border-radius:12px;box-shadow:3px 3px 0 #000}
+.btn-yellow:hover{background:#000;color:#FFC107;transform:translate(-1px,-1px);box-shadow:5px 5px 0 #000}
+.btn-dark-fr{background:#000;color:#fff;font-weight:700;border:2.5px solid #000;border-radius:12px}
+.btn-dark-fr:hover{background:#FFC107;color:#000}
+.stat-card{border:2.5px solid #000;border-radius:14px;box-shadow:4px 4px 0 #000;padding:14px 18px;font-weight:800}
+</style>
+
+<div class="container mt-4 mb-5">
+
+  <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+    <div class="d-flex align-items-center gap-3">
+      <div class="bg-warning border border-3 border-dark rounded-3 d-flex align-items-center justify-content-center fw-bold" style="width:52px;height:52px;font-size:22px">💰</div>
+      <div>
+        <h2 class="fw-bold mb-0" style="letter-spacing:-1px">Gestion des Paiements</h2>
+        <small class="text-muted fw-bold">ELOZAR • {{ payments.count }} paiements</small>
+      </div>
+    </div>
+    <div class="d-flex gap-2 flex-wrap">
+      <div class="stat-card bg-success text-white">🏢 Centre: {{ total_centre|floatformat:2|intcomma }} DH</div>
+      <div class="stat-card bg-primary text-white">👨‍🏫 Profs: {{ total_prof|floatformat:2|intcomma }} DH</div>
+    </div>
+  </div>
+
+  <div class="table-fr bg-white">
+    <div class="table-responsive">
+      <table class="table table-hover align-middle mb-0">
+        <thead>
+          <tr>
+            <th>📅 Date</th>
+            <th>Élève</th>
+            <th>Groupe</th>
+            <th>Montant</th>
+            <th>Part Centre (30%)</th>
+            <th>Part Prof (70%)</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for p in payments %}
+          <tr>
+            <td class="fw-bold">{{ p.date|date:"d/m/Y" }}</td>
+            <td class="fw-bold">{{ p.student.name }}</td>
+            <td><span class="badge badge-fr bg-light text-dark">{{ p.group.name }}</span></td>
+            <td><span class="badge badge-fr bg-warning text-dark">{{ p.amount_paid|intcomma }} DH</span></td>
+            <td class="fw-bold text-success">{{ p.centre_share|floatformat:2 }} DH</td>
+            <td class="fw-bold text-primary">{{ p.teacher_share|floatformat:2 }} DH</td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="6" class="text-center p-5 text-muted fw-bold">
+              <div style="font-size:40px">📭</div>
+              Aucun paiement enregistré
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+        {% if payments %}
+        <tfoot class="table-dark">
+          <tr>
+            <td colspan="3" class="text-end fw-bold text-warning">TOTAL:</td>
+            <td class="fw-bold">{{ total_centre|add:total_prof|floatformat:2|intcomma }} DH</td>
+            <td class="fw-bold text-success">{{ total_centre|floatformat:2|intcomma }} DH</td>
+            <td class="fw-bold text-info">{{ total_prof|floatformat:2|intcomma }} DH</td>
+          </tr>
+        </tfoot>
+        {% endif %}
+      </table>
+    </div>
+  </div>
+
+  <div class="mt-4 d-flex gap-2">
+    <a href="{% url 'dashboard' %}" class="btn btn-dark-fr">← Retour Dashboard</a>
+    <a href="{% url 'add_payment' %}" class="btn btn-yellow">+ Ajouter Paiement</a>
+  </div>
+
+</div>
+{% endblock %}

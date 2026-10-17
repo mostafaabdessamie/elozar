@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+
+
+{% block title %}Math_Edu: Leçons {% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <!-- Titre et description du cours -->
+    <h1 class="text-primary mb-4 text-center">{{ course.title }}</h1>
+    <p class="lead text-center">{{ course.description }}</p>
+
+    <!-- Section des leçons -->
+    <h2 class="mt-4 text-center">📚 Leçons</h2>
+    <div class="list-group">
+        {% for lesson in lessons %}
+            <a href="{% url 'lesson_detail' lesson.id %}" class="list-group-item list-group-item-action mb-2 shadow-sm">
+                <div class="d-flex justify-content-between">
+                    <span>{{ lesson.title }}</span>
+                    <span class="badge bg-info text-dark rounded-pill">🎥 {{ lesson.order }}</span>
+                </div>
+            </a>
+        {% endfor %}
+        <a href="{% url 'manage_lessons' course.id %}" class="btn btn-warning">Gérer les leçons</a>
+    </div>
+</div>
+
+<div class="container mt-5">
+    <h1 class="text-center text-primary mb-4">📖 Leçons de {{ course.title }}</h1>
+    
+    <div class="row">
+        {% for lesson in lessons %}
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card shadow-lg border-0 h-100">
+                    <div class="card-body">
+                        <h5 class="card-title text-center text-dark">{{ lesson.title }}</h5>
+                        <p class="text-muted text-center">
+                            📚 Cours : <strong>{{ lesson.course }}</strong>
+                        </p>
+                        
+                        <!-- Bouton pour voir la leçon -->
+                        <div class="d-grid">
+                            <a href="{% url 'lesson_detail' lesson.id %}" class="btn btn-primary btn-sm">
+                                🎥 Voir la leçon
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Icônes pour indiquer la présence d’une vidéo ou d’un PDF -->
+                    <div class="card-footer bg-light text-center">
+                        {% if lesson.video %}
+                            <span class="badge bg-success">🎬 Vidéo disponible</span>
+                        {% endif %}
+                        {% if lesson.pdf %}
+                            <span class="badge bg-danger">📄 PDF inclus</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <p class="text-center text-muted">Aucune leçon disponible.</p>
+        {% endfor %}
+    </div>
+    <div class="text-center d-flex justify-content-between">
+        <form action="{% url 'enroll_student' course.id %}" method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-info">S'inscrire au Cours</button>
+        </form>
+        <a href="{% url 'update_course' course.id %}" class="btn btn-primary btn-sm">
+            Modifier ce Cours
+        </a>
+        <form action="{% url 'delete_course' course.id %}" method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">Supprimer ce Cours</button>
+        </form>
+    </div>
+    <br>
+    <br>
+</div>
+<br>
+<br>
+{% endblock %}

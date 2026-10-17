@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<style>
+.card-fr{border:2.5px solid #000;border-radius:20px;background:#fff;box-shadow:7px 7px 0 #000}
+.btn-danger-fr{background:#FF3B30;color:#fff;font-weight:800;border:2.5px solid #000;border-radius:12px;padding:12px;box-shadow:3px 3px 0 #000}
+.btn-danger-fr:hover{background:#000;color:#FF3B30;transform:translate(-1px,-1px);box-shadow:5px 5px 0 #000}
+.btn-cancel{border:2.5px solid #000;border-radius:12px;padding:12px;font-weight:700;background:#fff}
+.btn-cancel:hover{background:#000;color:#fff}
+</style>
+
+<div class="container mt-5" style="max-width:500px">
+  <div class="card card-fr p-4 p-md-5 text-center">
+    
+    <div class="bg-danger text-white rounded-circle d-flex align-items-center justify-content-center fw-bold border border-3 border-dark mx-auto mb-3" style="width:80px;height:80px;font-size:40px">🗑️</div>
+    
+    <h3 class="fw-bold" style="letter-spacing:-1px">Confirmation de suppression</h3>
+    <p class="text-muted fw-bold small">Cette action est irréversible</p>
+    
+    <div class="bg-warning bg-opacity-25 border border-2 border-dark rounded-3 p-3 my-4">
+      <p class="mb-0">Voulez-vous vraiment supprimer <br><strong class="fs-5">"{{ object }}"</strong> ?</p>
+    </div>
+
+    <form method="post">
+      {% csrf_token %}
+      <div class="row g-2">
+        <div class="col-6">
+          <a href="{% url 'dashboard' %}" class="btn btn-cancel w-100">Annuler</a>
+        </div>
+        <div class="col-6">
+          <button type="submit" class="btn btn-danger-fr w-100">Supprimer</button>
+        </div>
+      </div>
+    </form>
+
+  </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block title %}Math_Edu: Cours {% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="text-center text-primary mb-4">📚 Explore des cours de la matière Mathématique au collège </h1>
+    
+    <div class="row">
+        {% for course in courses %}
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card shadow-lg border-0 h-100">
+                    <img src="{{ course.image.url }}" class="card-img-top" alt="{{ course.title }}" style="height: 200px; object-fit: cover;">
+                    
+                    <div class="card-body">
+                        <h5 class="card-title text-center text-dark">{{ course.title }}</h5>
+                        <p class="card-text text-muted">
+                            {{ course.description|truncatewords:15 }}
+                        </p>
+                        <div class="d-grid">
+                            <a href="{% url 'course_detail' course.id %}" class="btn btn-primary btn-sm">Voir Cours</a>
+                        </div>
+                        
+                    </div>
+
+                    <div class="card-footer bg-light text-center">
+                        <small class="text-muted">Professeur : {{ course.teacher.username }}</small>
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <p class="text-center">Aucun cours disponible .</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

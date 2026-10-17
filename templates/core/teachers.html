@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<style>
+.card-fr{border:2.5px solid #000;border-radius:16px;background:#fff;box-shadow:6px 6px 0 #000}
+.table-fr{border:2.5px solid #000;border-radius:16px;overflow:hidden}
+.table-fr thead th{background:#000;color:#FFC107;font-weight:800;text-transform:uppercase;font-size:0.8rem;border:0}
+.btn-yellow{background:#FFC107;color:#000;font-weight:800;border:2.5px solid #000;border-radius:12px;padding:9px 20px;box-shadow:3px 3px 0 #000}
+.btn-yellow:hover{background:#000;color:#FFC107;transform:translate(-1px,-1px);box-shadow:4px 4px 0 #000}
+.btn-edit{border:2px solid #000;border-radius:10px;font-weight:700;background:#fff;color:#000;padding:6px 14px}
+.btn-edit:hover{background:#000;color:#fff}
+.btn-del{border:2px solid #000;border-radius:10px;font-weight:700;background:#FF3B30;color:#fff;padding:6px 12px}
+.btn-del:hover{background:#000;color:#FF3B30}
+.badge-fr{border:2px solid #000;border-radius:8px;font-weight:800;padding:6px 12px}
+.avatar-fr{width:48px;height:48px;border-radius:12px;border:2.5px solid #000;display:flex;align-items:center;justify-content:center;font-weight:800;background:#FFC107}
+</style>
+
+<div class="container mt-4 mb-5">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div class="d-flex align-items-center gap-3">
+      <div class="avatar-fr">👨‍🏫</div>
+      <div>
+        <h2 class="fw-bold mb-0" style="letter-spacing:-1px">Liste des professeurs</h2>
+        <small class="text-muted fw-bold">{{ teachers.count }} profs • ELOZAR</small>
+      </div>
+    </div>
+    <a href="{% url 'add_teacher' %}" class="btn btn-yellow">+ Ajouter un professeur</a>
+  </div>
+
+  <div class="table-fr bg-white">
+    <div class="table-responsive">
+      <table class="table table-hover align-middle mb-0">
+        <thead>
+          <tr>
+            <th class="ps-4">Professeur</th>
+            <th>Matière</th>
+            <th>Téléphone</th>
+            <th class="text-end pe-4">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for teacher in teachers %}
+          <tr>
+            <td class="ps-4">
+              <div class="d-flex align-items-center gap-3">
+                <div class="avatar-fr" style="width:42px;height:42px;font-size:18px">{{ teacher.user.get_full_name|default:teacher.user.username|slice:":1"|upper }}</div>
+                <div>
+                  <div class="fw-bold">{{ teacher.user.get_full_name|default:teacher.user.username }}</div>
+                  <small class="text-muted fw-bold">{{ teacher.user.email|default:"Pas d'email" }}</small>
+                </div>
+              </div>
+            </td>
+            <td><span class="badge badge-fr bg-dark text-warning">{{ teacher.subject }}</span></td>
+            <td><span class="badge badge-fr bg-light text-dark">📞 {{ teacher.phone }}</span></td>
+            <td class="text-end pe-4">
+              <a href="{% url 'edit_teacher' teacher.pk %}" class="btn btn-sm btn-edit">✏️ Modifier</a>
+              <a href="{% url 'delete_teacher' teacher.pk %}" class="btn btn-sm btn-del">🗑️</a>
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="4" class="text-center py-5 text-muted fw-bold">
+              <div style="font-size:40px">📭</div>
+              Aucun professeur trouvé
+              <br><a href="{% url 'add_teacher' %}" class="btn btn-yellow btn-sm mt-2">Ajouter le premier prof</a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

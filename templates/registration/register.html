@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4 text-center text-primary">Inscription</h2>
+
+    <form method="post">
+        {% csrf_token %}
+        
+        <div class="form-group mb-3">
+            {{ form.as_p }}
+        </div>
+
+        <div class="text-center">
+            <button type="submit" class="btn btn-success btn-lg">S'inscrire</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

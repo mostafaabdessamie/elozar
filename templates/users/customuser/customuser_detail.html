@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+{% load humanize %}
+{% block title %}Détails de l'utilisateur{% endblock %}
+{% block content %}
+<style>
+    .profile-wrapper{ max-width: 900px; margin:auto; }
+    .cover{ height: 220px; background: linear-gradient(135deg, #0866ff 0%, #00c6ff 100%); border-radius: 12px 12px 0 0; }
+    .profile-card{ background: #fff; border-radius: 12px; box-shadow: 0 1px 2px rgba(0,0,0,0.1); overflow: hidden; margin-top: -60px; position: relative; z-index: 2; }
+    .avatar-big{ width: 140px; height: 140px; border-radius: 50%; border: 5px solid #fff; object-fit: cover; box-shadow: 0 4px 12px rgba(0,0,0,0.15); background: #fff; }
+    .badge-type{ border-radius: 20px; padding: 5px 12px; font-size: 12px; font-weight: 700; }
+    .info-box{ background: #f0f2f5; border-radius: 10px; padding: 12px 15px; }
+    .feed-card{ background: #fff; border-radius: 12px; box-shadow: 0 1px 2px rgba(0,0,0,0.08); }
+</style>
+
+<div class="profile-wrapper mt-4">
+    <div class="cover"></div>
+    <div class="profile-card">
+        <div class="p-4">
+            <div class="row align-items-end">
+                <div class="col-auto">
+                    {% if profile_user.profile_picture %}
+                        <img src="{{ profile_user.profile_picture.url }}" class="avatar-big" alt="{{ profile_user.username }}">
+                    {% else %}
+                        <img src="https://ui-avatars.com/api/?name={{ profile_user.username }}&background=0866ff&color=fff&size=200" class="avatar-big" alt="{{ profile_user.username }}">
+                    {% endif %}
+                </div>
+                <div class="col">
+                    <h2 class="fw-bold mb-1">{{ profile_user.username }}
+                        {% if profile_user.user_type == 1 %}<span class="badge bg-dark badge-type">ADMIN</span>
+                        {% elif profile_user.user_type == 2 %}<span class="badge bg-warning text-dark badge-type">PROFESSEUR</span>
+                        {% else %}<span class="badge bg-primary badge-type">ÉTUDIANT</span>{% endif %}
+                    </h2>
+                    <p class="text-muted mb-2"><i class="fas fa-envelope me-1"></i> {{ profile_user.email }}</p>
+                    <div class="d-flex gap-2 flex-wrap">
+                        <a href="{% url 'customuser_list' %}" class="btn btn-light rounded-pill px-3"><i class="fas fa-arrow-left me-1"></i> Retour</a>
+                        <a href="{% url 'customuser_update' profile_user.id %}" class="btn btn-warning rounded-pill px-3"><i class="fas fa-edit me-1"></i> Modifier</a>
+                        <a href="{% url 'customuser_delete' profile_user.id %}" class="btn btn-danger rounded-pill px-3" onclick="return confirm('Supprimer ?')"><i class="fas fa-trash me-1"></i> Supprimer</a>
+                    </div>
+                </div>
+            </div>
+            <hr class="my-4">
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <div class="info-box mb-3">
+                        <small class="text-muted text-uppercase fw-bold" style="font-size:11px">Type</small>
+                        <div class="fw-bold mt-1"><i class="fas fa-user-tag me-2 text-primary"></i> {{ profile_user.get_user_type_display }}</div>
+                    </div>
+                    <div class="info-box mb-3">
+                        <small class="text-muted text-uppercase fw-bold" style="font-size:11px">Bio (Profile)</small>
+                        <div class="fw-bold mt-1">{{ profile_user.profile.bio|default:"Non spécifié" }}</div>
+                    </div>
+                    <div class="info-box">
+                        <small class="text-muted text-uppercase fw-bold" style="font-size:11px">Membre depuis</small>
+                        <div class="fw-bold mt-1"><i class="fas fa-calendar me-2 text-muted"></i> {{ profile_user.date_joined|date:"d M Y" }}</div>
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <div class="info-box h-100" style="background:#fff; border:1px solid #e4e6eb;">
+                        <h6 class="fw-bold m-0 mb-2"><i class="fas fa-info-circle me-2 text-primary"></i> À propos</h6>
+                        <p class="mb-0" style="white-space: pre-wrap;">{{ profile_user.profile.bio|default:"Aucune bio disponible." }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- STATS CORRIGÉES -->
+    <div class="row g-3 mt-3">
+        <div class="col-4"><div class="bg-white p-3 rounded-3 text-center shadow-sm"><h4 class="fw-bold m-0 text-primary">{{ posts_count }}</h4><small class="text-muted">Publications</small></div></div>
+        <div class="col-4"><div class="bg-white p-3 rounded-3 text-center shadow-sm"><h4 class="fw-bold m-0 text-success">{{ friends_count }}</h4><small class="text-muted">Amis</small></div></div>
+        <div class="col-4"><div class="bg-white p-3 rounded-3 text-center shadow-sm"><h4 class="fw-bold m-0 text-danger">{{ likes_received }}</h4><small class="text-muted">J'aime reçus</small></div></div>
+    </div>
+
+    <!-- LISTE PUBLICATIONS + J'AIMES -->
+    <h5 class="fw-bold mt-4 mb-3">Publications ({{ posts_count }})</h5>
+    {% for post in posts %}
+    <div class="feed-card p-3 mb-3">
+        <div class="d-flex justify-content-between">
+            <small class="text-muted"><i class="far fa-clock"></i> {{ post.created_at|naturaltime }}</small>
+            <span class="badge bg-light text-dark border"><i class="fas fa-heart text-danger me-1"></i> {{ post.likes.count }} J'aime • {{ post.comments.count }} com</span>
+        </div>
+        <p class="mt-2 mb-2" style="white-space: pre-wrap;">{{ post.content }}</p>
+        {% if post.image %}<img src="{{ post.image.url }}" class="w-100 rounded-3" style="max-height:400px; object-fit:cover">{% endif %}
+        
+        {% if post.likes.all %}
+        <div class="mt-2">
+            {% for like in post.likes.all %}
+                <span class="badge bg-primary bg-opacity-10 text-primary border me-1 mb-1"><i class="fas fa-thumbs-up me-1"></i>{{ like.user.username }}</span>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+    {% empty %}
+    <div class="feed-card p-4 text-center text-muted">Aucune publication</div>
+    {% endfor %}
+</div>
+<br><br>
+{% endblock %}

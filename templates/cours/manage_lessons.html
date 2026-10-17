@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+
+{% block title %}Math_Edu: Gérer les leçons  {% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="text-primary mb-4">Gérer les leçons de {{ course.title }} </h1>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Titre de la leçon</th>
+                <th scope="col">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for lesson in lessons %}
+            <tr>
+                <th scope="row">{{ forloop.counter }}</th>
+                <td><a href="{% url 'lesson_detail' lesson.id %}">{{ lesson.title }}</a></td>
+                <td class="text-end">
+                    <a href="{% url 'update_lesson' lesson.id %}" class="btn btn-warning btn-sm">Modifier</a>
+                    <a href="{% url 'delete_lesson' lesson.id %}" class="btn btn-danger btn-sm" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette leçon ?');">Supprimer</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="3">Aucune leçon disponible.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{% url 'create_lesson' %}" class="btn btn-success mt-3">Ajouter une nouvelle leçon</a>
+</div>
+{% endblock %}

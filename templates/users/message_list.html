@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block title %}Liste des messages{% endblock %}
+
+{% block content %}
+<h1 class="text-center mb-4">Liste des messages</h1>
+<a href="{% url 'message_create' %}" class="btn btn-success mb-3">Créer un message</a>
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>Expéditeur</th>
+            <th>Destinataire</th>
+            <th>Contenu</th>
+            <th>Date</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for message in messages %}
+        <tr>
+            <td>{{ message.sender.username }}</td>
+            <td>{{ message.receiver.username }}</td>
+            <td>{{ message.content }}</td>
+            <td>{{ message.timestamp }}</td>
+            <td>
+                <a href="{% url 'message_detail' message.pk %}" class="btn btn-info btn-sm">Voir</a>
+                <a href="{% url 'message_update' message.pk %}" class="btn btn-warning btn-sm">Modifier</a>
+                <a href="{% url 'message_delete' message.pk %}" class="btn btn-danger btn-sm">Supprimer</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

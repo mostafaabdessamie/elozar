@@ -1,0 +1,4 @@
+django-admin startproject elozar
+django-admin startapp users
+django-admin startapp home
+django-admin startapp core
