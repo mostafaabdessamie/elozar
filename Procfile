@@ -1,0 +1,1 @@
+web: gunicorn elozar.wsgi --log-file -

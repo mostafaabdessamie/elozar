@@ -1,0 +1,11 @@
+{
+  "$schema": "https://schema.up.railway.app/railway.json",
+  "build": {
+    "builder": "nixpacks",
+    "buildCommand": "pip install -r requirements.txt && python manage.py collectstatic --noinput && python manage.py migrate"
+  },
+  "deploy": {
+    "startCommand": "gunicorn elozar.wsgi --log-file -",
+    "restartPolicyType": "onFailure"
+  }
+}

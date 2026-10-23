@@ -17,6 +17,36 @@
 body{ display:flex; flex-direction:column; min-height:100vh; }
 main{ flex:1 0 auto; }
 .notif-dropdown{ width:380px; border-radius:18px; overflow:hidden; }
+
+.footer-elozar{
+  background: #000;
+  position: relative;
+  isolation: isolate;
+}
+.footer-elozar::before{
+  content:"";
+  position:absolute; inset:0;
+  background: radial-gradient(800px 300px at 15% 0%, rgba(255,193,7,0.18), transparent),
+              radial-gradient(600px 250px at 90% 20%, rgba(255,193,7,0.08), transparent);
+  z-index:-1;
+}
+.qr-glow{
+  background:#fff; padding:8px; border-radius:16px;
+  box-shadow: 0 0 0 3px rgba(255,193,7,0.3), 0 10px 30px rgba(0,0,0,.5);
+  transition: all .3s;
+}
+.qr-glow:hover{ transform: scale(1.05) rotate(1deg); box-shadow: 0 0 0 4px #FFC107, 0 15px 40px rgba(0,0,0,.6); }
+.social-pro{
+  width:42px; height:42px; display:flex; align-items:center; justify-content:center;
+  border-radius:50%; background:#1a1a1a; border:1px solid #2a2a2a; color:#fff;
+  transition:.25s; text-decoration:none;
+}
+.social-pro:hover{ background:#FFC107; color:#000; transform:translateY(-4px); }
+.contact-box{
+  background: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03));
+  border:1px solid rgba(255,193,7,0.15); border-radius:16px;
+}
+
 </style>
 {% block extra_css %}{% endblock %}
 </head>
@@ -142,55 +172,87 @@ main{ flex:1 0 auto; }
   {% block content %}{% endblock %}
 </main>
 
-<footer class="bg-black text-white mt-auto pt-5 pb-4 border-top border-warning border-4">
+<footer class="footer-elozar text-white mt-auto pt-5 pb-3 border-top border-warning border-4">
   <div class="container">
     <div class="row g-4 mb-4">
-      <div class="col-lg-4 text-center text-lg-start">
-        <div class="d-flex align-items-center justify-content-center justify-content-lg-start gap-3 mb-3">
-          <img src="{% static 'logo.jpg' %}" alt="ELOZAR Logo" style="height:65px; width:65px; object-fit:cover; border-radius:12px; border:2px solid #FFC107; background:white; padding:3px;">
-          <div class="text-start">
-            <h4 class="fw-bold m-0" style="letter-spacing:1px;">ELOZAR</h4>
+      
+      <!-- 1. BRAND + QR -->
+      <div class="col-lg-4">
+        <div class="d-flex align-items-center gap-3 mb-3">
+          <img src="{% static 'logo.jpg' %}" alt="ELOZAR" style="height:68px; width:68px; object-fit:cover; border-radius:16px; border:2px solid #FFC107; background:white; padding:3px;">
+          <div>
+            <h4 class="fw-bold m-0">ELOZAR</h4>
             <small class="text-warning fw-bold" style="letter-spacing:3px; font-size:11px;">EDUCATION CENTER</small>
-            <div class="small text-white-50" style="font-size:11px;">L'éducation amusante</div>
+            <div class="small text-white-50">L'éducation amusante</div>
           </div>
         </div>
-        <p class="text-white-50 small mt-3">Centre de Soutien Scolaire • Langues • Conseil d'orientation.<br> On vous accompagne vers la réussite.</p>
+        <p class="text-white-50 small mb-4">Centre de Soutien Scolaire • Langues • Conseil d'orientation.<br>On vous accompagne vers la réussite à Taourirt.</p>
+        
+        <div class="d-flex gap-3 align-items-center">
+          <div class="qr-glow" style="width:118px;">
+            <img src="{% static 'qr.jpg' %}" alt="QR ELOZAR" class="img-fluid rounded-2">
+          </div>
+          <div>
+            <span class="badge bg-warning text-dark mb-1">موقع المركز</span>
+            <div class="fw-bold">elozar.com</div>
+            <small class="text-white-50"><i class="bi bi-qr-code text-warning"></i> Scannez-moi</small>
+          </div>
+        </div>
       </div>
-      <div class="col-lg-2 col-6">
-        <h6 class="fw-bold text-warning mb-3">Explorer</h6>
-        <ul class="list-unstyled">
-          <li class="mb-2"><a href="{% url 'home' %}" class="text-white-50 text-decoration-none small"><i class="bi bi-house me-1"></i> Accueil</a></li>
-          <li class="mb-2"><a href="{% url 'course_list' %}" class="text-white-50 text-decoration-none small"><i class="bi bi-journal-bookmark me-1"></i> Cours</a></li>
-          <li class="mb-2"><a href="{% url 'livre_list' %}" class="text-white-50 text-decoration-none small"><i class="bi bi-book me-1"></i> Livres</a></li>
-          <li class="mb-2"><a href="{% url 'teacher_list' %}" class="text-white-50 text-decoration-none small"><i class="bi bi-people me-1"></i> Profs</a></li>
-        </ul>
-      </div>
-      <div class="col-lg-2 col-6">
-        <h6 class="fw-bold text-warning mb-3">Infos</h6>
-        <ul class="list-unstyled">
-          <li class="mb-2"><a href="{% url 'about' %}" class="text-white-50 text-decoration-none small">À propos</a></li>
-          <li class="mb-2"><a href="#" class="text-white-50 text-decoration-none small">Contact</a></li>
-          <li class="mb-2"><a href="https://elozar.com" class="text-warning text-decoration-none small fw-bold">elozar.com</a></li>
-        </ul>
-      </div>
+
+      <!-- 2. EXPLORER + CONTACT -->
       <div class="col-lg-4">
-        <h6 class="fw-bold text-warning mb-3"><i class="bi bi-geo-alt-fill me-2"></i>Taourirt</h6>
-        <div class="bg-white bg-opacity-10 p-3 rounded-3">
-          <p class="small mb-2"><i class="bi bi-geo-alt text-warning me-2"></i> 157 Tri9 Madrassat L Wahda<br><span class="ms-4">Hay L Massira, Hda Saydaliyat L Hissin</span></p>
-          <p class="small mb-1 text-white-50"><i class="bi bi-telephone text-warning me-2"></i> +212 6 XX XX XX XX</p>
-          <p class="small mb-0 text-white-50"><i class="bi bi-envelope text-warning me-2"></i> contact@elozar.com</p>
-        </div>
-        <div class="d-flex gap-2 mt-3">
-          <a href="https://web.facebook.com/mstfy.bdalsmy.383501" class="btn btn-warning btn-sm rounded-circle" style="width:38px;height:38px;display:flex;align-items:center;justify-content:center;"><i class="bi bi-facebook text-dark"></i></a>
-          <a href="#" class="btn btn-warning btn-sm rounded-circle" style="width:38px;height:38px;display:flex;align-items:center;justify-content:center;"><i class="bi bi-instagram text-dark"></i></a>
-          <a href="#" class="btn btn-warning btn-sm rounded-circle" style="width:38px;height:38px;display:flex;align-items:center;justify-content:center;"><i class="bi bi-whatsapp text-dark"></i></a>
+        <div class="row">
+          <div class="col-5">
+            <h6 class="fw-bold text-warning mb-3">Explorer</h6>
+            <ul class="list-unstyled">
+              <li class="mb-2"><a href="{% url 'home' %}" class="text-white-50 text-decoration-none small"><i class="bi bi-chevron-right text-warning small me-1"></i> Accueil</a></li>
+              <li class="mb-2"><a href="{% url 'course_list' %}" class="text-white-50 text-decoration-none small"><i class="bi bi-chevron-right text-warning small me-1"></i> Cours</a></li>
+              <li class="mb-2"><a href="{% url 'livre_list' %}" class="text-white-50 text-decoration-none small"><i class="bi bi-chevron-right text-warning small me-1"></i> Livres</a></li>
+              <li class="mb-2"><a href="{% url 'teacher_list' %}" class="text-white-50 text-decoration-none small"><i class="bi bi-chevron-right text-warning small me-1"></i> Profs</a></li>
+            </ul>
+          </div>
+          <div class="col-7">
+            <h6 class="fw-bold text-warning mb-3"><i class="bi bi-telephone-fill me-1"></i> Contact</h6>
+            <div class="contact-box p-3">
+              <a href="tel:0649560440" class="text-warning fw-bold text-decoration-none d-block mb-2" style="font-size:18px;"><i class="bi bi-telephone-outbound me-2"></i>0649560440</a>
+              <div class="small text-white-50 mb-1"><i class="bi bi-envelope me-1 text-warning"></i> centreelozar@gmail.com</div>
+              <div class="small text-white-50 mb-2"><i class="bi bi-globe me-1 text-warning"></i> elozar.com</div>
+              <hr class="my-2 border-secondary opacity-25">
+              <div class="small text-white-50" style="line-height:1.4;"><i class="bi bi-geo-alt-fill text-warning me-1"></i>157 Tri9 Madrassat L Wahda<br>Hay L Massira - Taourirt</div>
+            </div>
+          </div>
         </div>
       </div>
+
+      <!-- 3. SOCIALS -->
+      <div class="col-lg-4">
+        <h6 class="fw-bold text-warning mb-1">Suivez-nous</h6>
+        <p class="text-warning small fw-bold mb-3">/CentreElozar</p>
+        <div class="d-flex flex-wrap gap-2 mb-4">
+          <a href="https://facebook.com/CentreElozar" target="_blank" class="social-pro"><i class="bi bi-facebook"></i></a>
+          <a href="https://instagram.com/CentreElozar" target="_blank" class="social-pro"><i class="bi bi-instagram"></i></a>
+          <a href="https://tiktok.com/@CentreElozar" target="_blank" class="social-pro"><i class="bi bi-tiktok"></i></a>
+          <a href="https://wa.me/212649560440" target="_blank" class="social-pro" style="background:#25D366; color:#000; border-color:#25D366;"><i class="bi bi-whatsapp"></i></a>
+          <a href="https://t.me/CentreElozar" target="_blank" class="social-pro"><i class="bi bi-telegram"></i></a>
+          <a href="https://x.com/CentreElozar" target="_blank" class="social-pro"><i class="bi bi-twitter-x"></i></a>
+          <a href="https://youtube.com/@CentreElozar" target="_blank" class="social-pro"><i class="bi bi-youtube"></i></a>
+        </div>
+        <div class="bg-warning text-dark p-3 rounded-4 text-center fw-bold shadow">
+          <i class="bi bi-stars me-1"></i> Rejoignez 1000+ élèves qui nous font confiance
+          <a href="{% url 'customuser_create' %}" class="btn btn-dark btn-sm w-100 rounded-pill mt-2 fw-bold">S'inscrire maintenant</a>
+        </div>
+      </div>
+
     </div>
+
     <hr class="border-secondary opacity-25">
     <div class="d-flex flex-column flex-md-row justify-content-between align-items-center gap-2">
-      <div class="d-flex align-items-center gap-2"><img src="{% static 'logo.jpg' %}" height="22" style="border-radius:4px;"><small class="text-white-50">© 2026 ELOZAR — Tous droits réservés</small></div>
-      <small class="text-white-50">Centre de Soutien • Langues • Conseil</small>
+      <div class="d-flex align-items-center gap-2">
+        <img src="{% static 'logo.jpg' %}" height="22" style="border-radius:4px;">
+        <small class="text-white-50">© 2026 ELOZAR — Tous droits réservés • Made with <i class="bi bi-heart-fill text-warning"></i> à Taourirt</small>
+      </div>
+      <small class="text-white-50">0649560440 | centreelozar@gmail.com | elozar.com</small>
     </div>
   </div>
 </footer>
