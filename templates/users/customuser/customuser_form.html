@@ -1,11 +1,114 @@
 {% extends 'base.html' %}
 {% block content %}
-<div class="container mt-5">
-    <h1>{% if object %}Modifier{% else %}Créer{% endif %} un Utilisateur</h1>
-    <form method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit" class="btn btn-primary">Enregistrer</button>
-    </form>
+<style>
+  .register-card{border-radius:24px; overflow:hidden; border:none}
+  .register-hero{background: linear-gradient(135deg,#0d6efd 0%,#6610f2 50%,#0dcaf0 100%); position:relative}
+  .register-hero::after{content:""; position:absolute; bottom:-30px; left:0; right:0; height:60px; background:#fff; border-radius:50% 50% 0 0}
+  .form-control{border-radius:12px; padding:12px 16px; border:1px solid #e9ecef}
+  .form-control:focus{border-color:#6610f2; box-shadow:0 0 0 4px rgba(102,16,242,0.1)}
+  .legal-box{background:#f8f7ff; border:2px solid #6610f2; border-radius:16px; position:relative}
+  .legal-box::before{content:"⚖️"; position:absolute; top:-12px; left:20px; background:#fff; padding:0 8px; font-size:18px}
+  .btn-register{border-radius:50px; padding:12px 30px; font-weight:700; background: linear-gradient(90deg,#0d6efd,#6610f2); border:none; transition:0.3s}
+  .btn-register:hover{transform:translateY(-2px); box-shadow:0 10px 25px rgba(102,16,242,0.3)}
+</style>
+
+<div class="container mt-4 mb-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-7">
+      <div class="card shadow-lg register-card">
+        <div class="register-hero text-white text-center p-4 p-lg-5">
+          <div class="bg-white text-primary rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width:70px;height:70px;font-size:32px"><i class="bi bi-rocket-takeoff"></i></div>
+          <h2 class="fw-bold mb-1">{% if object %}Modifier{% else %}Rejoindre{% endif %} L'Aventure Elozar</h2>
+          <p class="mb-4 opacity-75 small">Centre d'excellence - Discipline, Respect, Réussite</p>
+        </div>
+
+        <div class="card-body p-4 p-lg-5 pt-5">
+          <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label small fw-bold">Prénom</label>
+                {{ form.first_name }}
+              </div>
+              <div class="col-md-6">
+                <label class="form-label small fw-bold">Nom</label>
+                {{ form.last_name }}
+              </div>
+              <div class="col-12">
+                <label class="form-label small fw-bold">Nom d'utilisateur</label>
+                {{ form.username }}
+              </div>
+              <div class="col-12">
+                <label class="form-label small fw-bold">Photo de profil</label>
+                {{ form.profile_picture }}
+              </div>
+              <div class="col-12">
+                <label class="form-label small fw-bold">Email</label>
+                {{ form.email }}
+              </div>
+              <div class="col-md-6">
+                <label class="form-label small fw-bold">Mot de passe</label>
+                {{ form.password1 }}
+              </div>
+              <div class="col-md-6">
+                <label class="form-label small fw-bold">Confirmer</label>
+                {{ form.password2 }}
+              </div>
+              <div class="col-md-6">
+                <label class="form-label small fw-bold">Vous êtes ?</label>
+                {{ form.user_type }}
+              </div>
+              <div class="col-md-6">
+                <label class="form-label small fw-bold">Ville</label>
+                {{ form.location }}
+              </div>
+              <div class="col-12">
+                <label class="form-label small fw-bold">Bio (optionnel)</label>
+                {{ form.bio }}
+              </div>
+            </div>
+
+            <!-- LEGAL BOX ZWIN -->
+            <div class="legal-box p-4 mt-4">
+              <h6 class="fw-bold text-primary mb-3"><i class="bi bi-shield-lock me-2"></i>Engagement Légal - Loi 09-08</h6>
+              {% if form.accept_reglement %}
+              <div class="form-check mb-3">
+                {{ form.accept_reglement }}
+                <label class="form-check-label small ms-2" for="{{ form.accept_reglement.id_for_label }}">
+                  J'ai lu et j'approuve le <a href="{% url 'about' %}" target="_blank" class="fw-bold text-primary text-decoration-none">Règlement Intérieur</a> <span class="text-danger">*</span>
+                </label>
+                {% if form.accept_reglement.errors %}<div class="text-danger small mt-1">{{ form.accept_reglement.errors }}</div>{% endif %}
+              </div>
+              {% endif %}
+              
+              {% if form.accept_loi_0908 %}
+              <div class="form-check">
+                {{ form.accept_loi_0908 }}
+                <label class="form-check-label small ms-2" for="{{ form.accept_loi_0908.id_for_label }}">
+                  J'accepte la <a href="{% url 'loi08_09' %}" target="_blank" class="fw-bold text-primary text-decoration-none">Loi 09-08</a> : aucune donnée perso sans autorisation écrite <span class="text-danger">*</span>
+                </label>
+                {% if form.accept_loi_0908.errors %}<div class="text-danger small mt-1">{{ form.accept_loi_0908.errors }}</div>{% endif %}
+              </div>
+              {% endif %}
+            </div>
+
+            <!-- Errors -->
+            {% if form.non_field_errors %}
+            <div class="alert alert-danger mt-3 rounded-3 small">{{ form.non_field_errors }}</div>
+            {% endif %}
+
+            <div class="text-center mt-4">
+              <button type="submit" class="btn btn-primary btn-register w-100">
+                <i class="bi bi-check2-circle me-2"></i>{% if object %}Mettre à jour{% else %}Créer mon compte{% endif %}
+              </button>
+              <p class="small text-muted mt-3">En vous inscrivant, vous rejoignez une famille éducative d'excellence.</p>
+            </div>
+
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 {% endblock %}

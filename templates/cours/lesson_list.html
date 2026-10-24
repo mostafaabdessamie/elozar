@@ -1,46 +1,104 @@
 {% extends 'base.html' %}
-
-{% block title %} Math_Edu: Leços {% endblock %}
-
 {% block content %}
-<div class="container mt-5">
-    <h1 class="text-center text-primary mb-4">📖 Leçons disponibles</h1>
-    
-    <div class="row">
-        {% for lesson in lessons %}
-            <div class="col-md-6 col-lg-4 mb-4">
-                <div class="card shadow-lg border-0 h-100">
-                    <div class="card-body">
-                        <h5 class="card-title text-center text-dark">{{ lesson.title }}</h5>
-                        <p class="text-muted text-center">
-                            📚 Cours : <strong>{{ lesson.course }}</strong>
-                        </p>
-                        
-                        <!-- Bouton pour voir la leçon -->
-                        <div class="d-grid">
-                            <a href="{% url 'lesson_detail' lesson.id %}" class="btn btn-primary btn-sm">
-                                🎥 Voir la leçon
-                            </a>
-                            <a href="#" class="btn btn-primary btn-sm">
-                                📚 Voir les execices
-                            </a>
-                        </div>
-                    </div>
+<style>
+.lessons-hero{
+  background: linear-gradient(135deg,#0ea5e9 0%,#6366f1 50%,#8b5cf6 100%);
+  border-radius: 26px;
+  padding: 45px 30px;
+  color: white;
+  text-align:center;
+}
+.filter-pill{
+  background:white;
+  border-radius:50px;
+  box-shadow:0 8px 20px rgba(0,0,0,0.07);
+  padding:8px 16px;
+}
+.lesson-card-pro{
+  border:0; border-radius:20px;
+  transition:.3s; overflow:hidden;
+}
+.lesson-card-pro:hover{
+  transform: translateY(-6px);
+  box-shadow:0 18px 35px rgba(0,0,0,0.11) !important;
+}
+.thumb{
+  height:160px;
+  background: linear-gradient(135deg,#f1f5f9,#e2e8f0);
+  display:flex; align-items:center; justify-content:center;
+  font-size:48px;
+  position:relative;
+}
+.order-badge{
+  position:absolute; top:12px; left:12px;
+  background:white; border-radius:50px;
+  padding:5px 12px; font-weight:800; font-size:12px;
+  box-shadow:0 4px 10px rgba(0,0,0,0.08);
+}
+</style>
 
-                    <!-- Icônes pour indiquer la présence d’une vidéo ou d’un PDF -->
-                    <div class="card-footer bg-light text-center">
-                        {% if lesson.video %}
-                            <span class="badge bg-success">🎬 Vidéo disponible</span>
-                        {% endif %}
-                        {% if lesson.pdf %}
-                            <span class="badge bg-danger">📄 PDF inclus</span>
-                        {% endif %}
-                    </div>
-                </div>
-            </div>
-        {% empty %}
-            <p class="text-center text-muted">Aucune leçon disponible.</p>
-        {% endfor %}
+<div class="container my-4" style="max-width:1200px;">
+
+  <!-- HERO -->
+  <div class="lessons-hero mb-4 shadow-sm">
+    <h1 class="fw-bold display-6 mb-2">📖 Toutes les Leçons</h1>
+    <p class="opacity-75 mb-4">Retrouvez l'ensemble des leçons de mathématiques, organisées par cours.</p>
+    <div class="filter-pill d-flex mx-auto" style="max-width:520px;">
+      <i class="bi bi-search text-muted ms-2 me-2"></i>
+      <input id="searchLesson" type="text" class="form-control border-0 shadow-none" placeholder="Rechercher une leçon, un cours...">
     </div>
+  </div>
+
+  <!-- GRID -->
+  <div class="row g-4" id="lessonGrid">
+    {% for lesson in lessons %}
+    <div class="col-md-6 col-lg-4 lesson-item">
+      <div class="card lesson-card-pro shadow-sm h-100">
+        <div class="thumb">
+          {% if lesson.image %}
+            <img src="{{ lesson.image.url }}" style="width:100%; height:100%; object-fit:cover;">
+          {% else %}
+            🎬
+          {% endif %}
+          <span class="order-badge">#{{ lesson.order }} • {{ lesson.course.title|truncatechars:18 }}</span>
+          <div class="position-absolute bottom-0 end-0 m-2 d-flex gap-1">
+            {% if lesson.video %}<span class="badge bg-success rounded-pill">Vidéo</span>{% endif %}
+            {% if lesson.pdf %}<span class="badge bg-danger rounded-pill">PDF</span>{% endif %}
+          </div>
+        </div>
+
+        <div class="card-body p-4">
+          <h5 class="fw-bold mb-1 lesson-title">{{ lesson.title }}</h5>
+          <p class="text-muted small mb-3"><i class="bi bi-book me-1"></i>{{ lesson.course.title }}</p>
+          
+          <div class="d-grid gap-2">
+            <a href="{% url 'lesson_detail' lesson.id %}" class="btn btn-dark rounded-pill fw-bold">
+              <i class="bi bi-play-circle me-1"></i> Voir la leçon
+            </a>
+            <a href="{% url 'lesson_quiz' lesson.id %}" class="btn btn-outline-primary rounded-pill fw-bold btn-sm">
+              <i class="bi bi-puzzle me-1"></i> Voir les exercices / Quiz
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% empty %}
+    <div class="col-12 text-center py-5">
+      <div style="font-size:80px;">📭</div>
+      <h5 class="mt-3 fw-bold">Aucune leçon disponible</h5>
+      <p class="text-muted">Commencez par créer un cours puis ajoutez des leçons.</p>
+    </div>
+    {% endfor %}
+  </div>
 </div>
+
+<script>
+document.getElementById('searchLesson')?.addEventListener('keyup', function(){
+  let q = this.value.toLowerCase();
+  document.querySelectorAll('.lesson-item').forEach(el=>{
+    let t = el.querySelector('.lesson-title').innerText.toLowerCase() + ' ' + el.innerText.toLowerCase();
+    el.style.display = t.includes(q) ? '' : 'none';
+  });
+});
+</script>
 {% endblock %}

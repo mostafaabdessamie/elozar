@@ -4,6 +4,7 @@ from django.contrib.auth import get_user_model
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from .models import Teacher, Student, Group, Payment
+from users.models import CustomUser, Profile, Post
 from .forms import TeacherForm, StudentForm, GroupForm, PaymentForm
 
 User = get_user_model()
@@ -74,14 +75,41 @@ def dashboard(request):
 
 @login_required
 def global_search(request):
-    query = request.GET.get('q', '')
-    results = []
-    if query:
-        students = Student.objects.filter(Q(name__icontains=query) | Q(phone__icontains=query))
-        teachers = Teacher.objects.filter(Q(name__icontains=query) | Q(subject__icontains=query))
-        groups = Group.objects.filter(name__icontains=query)
-        results = list(students) + list(teachers) + list(groups)
-    return render(request, 'core/search_results.html', {'query': query, 'results': results})
+    query = request.GET.get('q', '').strip()
+    
+    if not query:
+        return redirect('home_chat')
+
+    users = CustomUser.objects.filter(
+        Q(username__icontains=query) |
+        Q(first_name__icontains=query) |
+        Q(last_name__icontains=query) |
+        Q(email__icontains=query)
+    )
+
+    profiles = Profile.objects.filter(
+        Q(user__username__icontains=query) |
+        Q(user__first_name__icontains=query) |
+        Q(user__last_name__icontains=query) |
+        Q(bio__icontains=query) |
+        Q(location__icontains=query)
+    )
+
+    posts = Post.objects.filter(
+        Q(content__icontains=query)
+    )
+
+    total = users.count() + profiles.count() + posts.count()
+
+    return render(request, 'core/search_results.html', {
+        'query': query,
+        'results': {
+            'users': users,
+            'profiles': profiles,
+            'posts': posts,
+        },
+        'total': total
+    })
 
 @login_required
 def payment_list(request):

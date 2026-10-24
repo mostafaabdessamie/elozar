@@ -1,39 +1,117 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="container mt-4">
-    <h2>Gestion des étudiants pour le cours: {{ course.title }}</h2>
+<style>
+  .student-card{border-radius:24px; border:0; overflow:hidden;}
+  .student-header{
+    background: linear-gradient(135deg,#0ea5e9 0%,#6366f1 50%,#8b5cf6 100%);
+    padding:32px; color:white; position:relative;
+  }
+  .stat-pill{
+    background:rgba(255,255,255,0.18);
+    backdrop-filter: blur(10px);
+    border-radius:50px; padding:8px 16px;
+    font-size:13px; font-weight:700;
+  }
+  .table-pro thead th{
+    font-size:11px; letter-spacing:.8px; text-transform:uppercase;
+    color:#94a3b8; border:0; padding:18px 20px; background:#f8fafc;
+  }
+  .table-pro tbody td{
+    padding:18px 20px; vertical-align:middle;
+    border-top:1px solid #f1f5f9;
+  }
+  .table-pro tbody tr{transition:.2s;}
+  .table-pro tbody tr:hover{background:#f8fafc;}
+  .avatar{
+    width:44px; height:44px; border-radius:12px;
+    display:inline-flex; align-items:center; justify-content:center;
+    font-weight:800; color:white;
+    background: linear-gradient(135deg,#0ea5e9,#6366f1);
+  }
+  .avatar.me{
+    background: linear-gradient(135deg,#10b981,#06b6d4);
+    box-shadow:0 0 0 3px #dcfce7;
+  }
+</style>
 
+<div class="container my-5" style="max-width:1000px;">
+  <div class="card student-card shadow-xl">
+    <!-- HEADER -->
+    <div class="student-header">
+      <div class="d-flex justify-content-between align-items-start flex-wrap gap-3">
+        <div>
+          <a href="{% url 'course_detail' course.id %}" class="text-white text-decoration-none small opacity-75"><i class="bi bi-arrow-left"></i> Retour au cours</a>
+          <h2 class="fw-bold mt-2 mb-1">Mes camarades de classe</h2>
+          <p class="mb-0 opacity-90"><i class="bi bi-book me-1"></i> {{ course.title }}</p>
+        </div>
+        <div class="d-flex gap-2">
+          <span class="stat-pill"><i class="bi bi-people me-1"></i> {{ students|length }} étudiants</span>
+          <span class="stat-pill"><i class="bi bi-mortarboard me-1"></i> Math_Edu</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- TABLE -->
     {% if students %}
-    <table class="table table-striped">
-        <thead class="table-dark">
-            <tr>
-                <th>Nom</th>
-                <th>Email</th>
-                <th>Date d'inscription</th>
-                <th>Action</th>
-            </tr>
+    <div class="table-responsive">
+      <table class="table table-pro mb-0 align-middle">
+        <thead>
+          <tr>
+            <th>Étudiant</th>
+            <th>Email</th>
+            <th>Depuis</th>
+            <th class="text-end">Statut</th>
+          </tr>
         </thead>
         <tbody>
-            {% for enrollment in students %}
-            <tr>
-                <td>{{ enrollment.student.username }}</td>
-                <td>{{ enrollment.student.email }}</td>
-                <td>{{ enrollment.date_joined|date:"d M Y - H:i" }}</td>
-                <td>
-                    <form action="{% url 'unenroll_student' course.id %}" method="post" onsubmit="return confirm('Êtes-vous sûr de vouloir désinscrire cet étudiant?');">
-                        {% csrf_token %}
-                        <input type="hidden" name="student_id" value="{{ enrollment.student.id }}">
-                        <button type="submit" class="btn btn-danger btn-sm">Désinscrire</button>
-                    </form>
-                </td>
-            </tr>
-            {% endfor %}
+          {% for enrollment in students %}
+          <tr {% if enrollment.student.id == request.user.id %}style="background:#f0fdf4;"{% endif %}>
+            <td>
+              <div class="d-flex align-items-center gap-3">
+                <div class="avatar {% if enrollment.student.id == request.user.id %}me{% endif %}">{{ enrollment.student.username|first|upper }}</div>
+                <div>
+                  <div class="fw-bold">
+                    {{ enrollment.student.username }}
+                    {% if enrollment.student.id == request.user.id %}
+                      <span class="badge bg-success ms-2 rounded-pill" style="font-size:10px;">Vous</span>
+                    {% endif %}
+                  </div>
+                  <small class="text-muted">@{{ enrollment.student.username }}</small>
+                </div>
+              </div>
+            </td>
+            <td><span class="text-dark"><i class="bi bi-envelope me-1 text-muted"></i>{{ enrollment.student.email }}</span></td>
+            <td>
+              <span class="badge bg-light text-dark border rounded-pill px-3 py-2">
+                <i class="bi bi-calendar3 me-1"></i> {{ enrollment.enrolled_at|date:"d M Y"|default:enrollment.date_joined|date:"d M Y" }}
+              </span>
+            </td>
+            <td class="text-end">
+              {% if enrollment.student.id == request.user.id %}
+                <span class="badge bg-success bg-opacity-10 text-success rounded-pill px-3 py-2"><i class="bi bi-check-circle me-1"></i> Inscrit</span>
+              {% else %}
+                <span class="badge bg-light text-muted rounded-pill px-3 py-2"><i class="bi bi-person me-1"></i> Camarade</span>
+              {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
         </tbody>
-    </table>
-    {% else %}
-    <p class="alert alert-warning">Aucun étudiant inscrit pour le moment.</p>
-    {% endif %}
+      </table>
+    </div>
 
-    <a href="{% url 'course_detail' course.id %}" class="btn btn-secondary">Retour au cours</a>
+    <div class="card-footer bg-light p-3 d-flex justify-content-between align-items-center">
+      <small class="text-muted"><i class="bi bi-shield-check me-1"></i> Visible uniquement par les étudiants inscrits</small>
+      <a href="{% url 'course_detail' course.id %}" class="btn btn-dark rounded-pill btn-sm px-4">Retour au cours</a>
+    </div>
+
+    {% else %}
+    <div class="text-center p-5">
+      <div class="mx-auto d-flex align-items-center justify-content-center rounded-circle mb-3" style="width:90px; height:90px; background:#f1f5f9; font-size:44px;">👥</div>
+      <h5 class="fw-bold">Vous êtes le premier !</h5>
+      <p class="text-muted small">Aucun autre étudiant n'est encore inscrit à ce cours.</p>
+      <a href="{% url 'course_detail' course.id %}" class="btn btn-primary rounded-pill px-4 mt-2">Retour au cours</a>
+    </div>
+    {% endif %}
+  </div>
 </div>
 {% endblock %}

@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container my-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-10">
+      <div class="card border-0 shadow-lg overflow-hidden" style="border-radius: 20px;">
+        
+        <div class="bg-primary text-white p-4 text-center" style="background: linear-gradient(135deg, #0d6efd, #6610f2) !important;">
+          <div class="mb-2">
+            <span style="font-size: 45px;">🛡️</span>
+          </div>
+          <h3 class="fw-bold mb-1">Protection de la Vie Privée</h3>
+          <p class="mb-0 opacity-75">Article 9 - Loi 09-08 | Plateforme Elozar</p>
+        </div>
+
+        <div class="card-body p-4 p-md-5">
+
+          <div class="alert alert-primary d-flex align-items-center border-0" style="background: #eef2ff; border-radius: 12px;">
+            <div class="me-3 fs-4">📜</div>
+            <div>
+              La plateforme <strong>Elozar</strong> s'engage à respecter la <strong>Loi n° 09-08</strong> relative à la protection des personnes physiques à l'égard du traitement des données à caractère personnel.
+            </div>
+          </div>
+
+          <!-- 9.1 -->
+          <div class="card border-0 shadow-sm mb-4" style="border-radius: 15px; border-left: 5px solid #0d6efd !important;">
+            <div class="card-body p-4">
+              <h5 class="fw-bold text-primary"><span class="badge bg-primary me-2">9.1</span>Consentement et Collecte</h5>
+              <p class="mb-0 text-muted" style="line-height:1.8;">
+                Aucune donnée personnelle (nom, prénom, image, voix, téléphone, adresse) d'un élève mineur ou d'un tiers ne peut être publiée dans un cours sans le <strong class="text-dark">consentement préalable, explicite et écrit</strong> de la personne concernée ou de son tuteur légal.<br>
+                <span class="badge bg-light text-dark mt-2 border">👨‍🏫 L'enseignant est seul responsable de l'obtention de ce consentement.</span>
+              </p>
+            </div>
+          </div>
+
+          <!-- 9.2 -->
+          <div class="card border-0 shadow-sm mb-4" style="border-radius: 15px; border-left: 5px solid #198754 !important;">
+            <div class="card-body p-4">
+              <h5 class="fw-bold text-success"><span class="badge bg-success me-2">9.2</span>Droits des Personnes Concernées</h5>
+              <p class="mb-3 text-muted" style="line-height:1.8;">
+                Conformément aux articles 7 et suivants de la loi 09-08, toute personne dispose d'un droit d'accès, de rectification et d'opposition.
+              </p>
+              <div class="p-3 rounded d-flex justify-content-between align-items-center flex-wrap" style="background:#f0fdf4; border:1px dashed #198754;">
+                <div>
+                  <small class="text-success fw-bold">📧 CONTACT POUR RETRAIT IMMÉDIAT</small><br>
+                  <strong>elozar@gmail.com</strong>
+                </div>
+                <span class="badge bg-success fs-6 mt-2 mt-md-0">⏱️ Réponse en 24-48h</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 9.3 -->
+          <div class="card border-0 shadow-sm mb-4" style="border-radius: 15px; border-left: 5px solid #dc3545 !important;">
+            <div class="card-body p-4">
+              <h5 class="fw-bold text-danger"><span class="badge bg-danger me-2">9.3</span>Interdiction Formelle 🚫</h5>
+              <p class="text-muted mb-3">Il est formellement interdit de publier :</p>
+              <ul class="list-unstyled mb-0">
+                <li class="mb-2 d-flex"><span class="me-2">📸</span> Des photos/vidéos montrant le visage d'élèves sans floutage et sans autorisation</li>
+                <li class="mb-2 d-flex"><span class="me-2">🪪</span> Des informations permettant d'identifier une personne (CNE, adresse, téléphone)</li>
+                <li class="d-flex"><span class="me-2">⚠️</span> Tout contenu portant atteinte à la dignité, à l'honneur ou à la vie privée d'autrui</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- 9.4 -->
+          <div class="alert alert-danger border-0 p-4 d-flex" style="border-radius: 15px; background: linear-gradient(135deg, #fff1f2, #ffe4e6);">
+            <div class="me-3 fs-3">⚖️</div>
+            <div>
+              <h5 class="fw-bold text-danger mb-2">9.4 - Sanction</h5>
+              <p class="mb-0 text-dark" style="line-height:1.8;">
+                Tout manquement entraîne la <strong>suppression immédiate du cours</strong> et la <strong>suspension du compte</strong>. L'enseignant assume seul l'entière responsabilité civile et pénale devant les juridictions compétentes, conformément à la loi 09-08. La plateforme Elozar, en sa qualité d'hébergeur, ne saurait être tenue responsable.
+              </p>
+            </div>
+          </div>
+
+          <div class="text-center mt-4">
+            <small class="text-muted">🔒 Votre vie privée est notre priorité | Elozar - Safe Platform</small>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,36 +1,61 @@
 {% extends 'base.html' %}
-
-
-{% block title %}Math_Edu: Modifier le Cours{% endblock %}
-
 {% block content %}
-<div class="container mt-5">
-    <div class="card shadow-lg border-0">
-        <div class="card-body">
-            <h1 class="text-center text-primary mb-4">✏ Modifier le cours</h1>
+<style>
+  .edit-card{
+    border-radius:28px; border:0; overflow:hidden;
+  }
+  .edit-header{
+    background: linear-gradient(135deg,#0f172a 0%,#334155 100%);
+    padding:28px 36px; color:white;
+  }
+  .form-control-pro{
+    border-radius:14px; padding:14px 18px;
+    border:1.5px solid #e2e8f0; background:#f8fafc;
+    transition:.2s;
+  }
+  .form-control-pro:focus{
+    background:white; border-color:#6366f1;
+    box-shadow:0 0 0 4px rgba(99,102,241,0.15);
+  }
+  .btn-save{
+    background: linear-gradient(135deg,#6366f1,#0ea5e9);
+    border:0; border-radius:100px; padding:12px 28px;
+    font-weight:800; color:white;
+    box-shadow:0 10px 20px rgba(99,102,241,0.3);
+  }
+  .btn-save:hover{transform:translateY(-2px); box-shadow:0 14px 24px rgba(99,102,241,0.4); color:white;}
+</style>
 
+<div class="container mt-5" style="max-width:750px;">
+    <div class="card edit-card shadow-xl">
+        <div class="edit-header">
+          <a href="{% url 'course_detail' course.id %}" class="text-white-50 text-decoration-none small"><i class="bi bi-arrow-left"></i> Retour au cours</a>
+          <h1 class="fw-bold mt-2 mb-1" style="letter-spacing:-1px;">✏️ Modifier le cours</h1>
+          <p class="mb-0 opacity-70 small">Mettez à jour les informations de votre cours</p>
+        </div>
+
+        <div class="card-body p-4 p-md-5">
             <form method="POST">
                 {% csrf_token %}
 
-                <!-- Titre -->
-                <div class="mb-3">
-                    <label class="form-label fw-bold">📌 Titre :</label>
-                    <input type="text" name="title" class="form-control" value="{{ course.title }}" required>
+                <div class="mb-4">
+                    <label class="form-label fw-bold small text-muted text-uppercase" style="letter-spacing:.8px;">📌 Titre du cours</label>
+                    <input type="text" name="title" class="form-control form-control-pro fw-bold" value="{{ course.title }}" placeholder="Ex: Algèbre - Niveau BAC" required>
                 </div>
 
-                <!-- Description -->
-                <div class="mb-3">
-                    <label class="form-label fw-bold">📄 Description :</label>
-                    <textarea name="description" class="form-control" rows="5" required>{{ course.description }}</textarea>
+                <div class="mb-5">
+                    <label class="form-label fw-bold small text-muted text-uppercase" style="letter-spacing:.8px;">📄 Description</label>
+                    <textarea name="description" class="form-control form-control-pro" rows="6" placeholder="Décrivez le contenu du cours..." required>{{ course.description }}</textarea>
+                    <small class="text-muted mt-2 d-block"><i class="bi bi-info-circle me-1"></i> Une bonne description aide les étudiants à s'inscrire.</small>
                 </div>
 
-                <!-- Boutons d'action -->
-                <div class="text-center">
-                    <button type="submit" class="btn btn-primary">💾 Mettre à jour</button>
-                    <a href="{% url 'course_detail' course.id %}" class="btn btn-secondary">↩ Annuler</a>
+                <div class="d-flex gap-3 justify-content-center">
+                    <a href="{% url 'course_detail' course.id %}" class="btn btn-light border rounded-pill px-4 py-3 fw-bold">↩ Annuler</a>
+                    <button type="submit" class="btn btn-save">💾 Mettre à jour</button>
                 </div>
             </form>
         </div>
     </div>
 </div>
+<br><br>
 {% endblock %}

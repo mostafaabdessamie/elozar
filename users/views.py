@@ -6,7 +6,7 @@ from django.core.exceptions import PermissionDenied
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from .models import CustomUser, Profile, Friendship, Post, Comment, Like, Chat, Message, Notification
-from .forms import CustomUserForm, MessageForm, PostForm, CommentForm, FriendRequestForm
+from .forms import CustomUserForm, MessageForm, PostForm, CommentForm, FriendRequestForm, CustomUserUpdateForm
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views.generic import DetailView
@@ -84,32 +84,40 @@ class CustomUserDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
         context['friends_count'] = Friendship.objects.filter(from_user=u, accepted=True).count() + Friendship.objects.filter(to_user=u, accepted=True).count()
 
         return context
-
+    
 class CustomUserCreateView(CreateView):
     model = CustomUser
     form_class = CustomUserForm
     template_name = 'users/customuser/customuser_form.html'
-    success_url = reverse_lazy('customuser_list')
+    success_url = reverse_lazy('login')
 
-class CustomUserUpdateView(UpdateView):
+class CustomUserUpdateView(LoginRequiredMixin, UpdateView):
     model = CustomUser
-    form_class = CustomUserForm
+    form_class = CustomUserUpdateForm
     template_name = 'users/customuser/customuser_form.html'
-    success_url = reverse_lazy('customuser_list')
+    success_url = reverse_lazy('home_chat')
+
+    def test_func(self):
+        obj = self.get_object()
+        return self.request.user == obj or self.request.user.user_type == 1
 
     def dispatch(self, request, *args, **kwargs):
-        if not request.user.is_authenticated or request.user.user_type != 1:
-            raise PermissionDenied("Vous n'avez pas la permission de modifier cet utilisateur.")
+        obj = self.get_object()
+        if not request.user.is_authenticated:
+            raise PermissionDenied("Connectez-vous d'abord")
+        if request.user != obj and request.user.user_type != 1:
+            from django.shortcuts import redirect
+            return redirect('home_chat')
         return super().dispatch(request, *args, **kwargs)
 
-class CustomUserDeleteView(DeleteView):
+class CustomUserDeleteView(LoginRequiredMixin, DeleteView):
     model = CustomUser
     template_name = 'users/customuser/customuser_confirm_delete.html'
     success_url = reverse_lazy('customuser_list')
 
     def dispatch(self, request, *args, **kwargs):
         if not request.user.is_authenticated or request.user.user_type != 1:
-            raise PermissionDenied("Vous n'avez pas la permission de supprimer cet utilisateur.")
+            return redirect('home_chat') 
         return super().dispatch(request, *args, **kwargs)
 
 class ProfileDetailView(DetailView):
@@ -398,7 +406,7 @@ def mark_all_read(request):
     return redirect(request.META.get('HTTP_REFERER', 'home'))
 
 @login_required
-def notification_click(request, pk):  # بدل notif_id دير pk
+def notification_click(request, pk):  
     notif = get_object_or_404(Notification, id=pk, user=request.user)
     notif.read = True
     notif.save()

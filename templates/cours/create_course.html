@@ -1,37 +1,119 @@
 {% extends 'base.html' %}
-
-{% block title %}Math_Edu: Ajauter Cours {% endblock %}
+{% block title %}Math_Edu : Ajouter un Cours{% endblock %}
 
 {% block content %}
-<div class="container mt-5">
-    <!-- Titre du formulaire -->
-    <h1 class="text-center text-primary mb-4">📝 Créer un nouveau cours</h1>
+<style>
+.create-course-card{
+  border-radius:24px;
+  border:0;
+  overflow:hidden;
+}
+.header-gradient{
+  background: linear-gradient(135deg,#667eea 0%,#764ba2 100%);
+  padding:35px;
+  color:white;
+}
+.input-modern{
+  border-radius:12px;
+  padding:12px 16px;
+  border:1px solid #e5e7eb;
+  background:#f9fafb;
+  transition:0.2s;
+}
+.input-modern:focus{
+  background:#fff;
+  border-color:#667eea;
+  box-shadow:0 0 0 4px rgba(102,126,234,0.15);
+}
+.legal-card{
+  background:#fffbeb;
+  border:2px solid #fcd34d;
+  border-radius:16px;
+}
+.legal-check:checked{
+  background-color:#f59e0b;
+  border-color:#f59e0b;
+}
+.btn-create{
+  border-radius:14px;
+  padding:14px;
+  font-weight:700;
+  font-size:16px;
+  background: linear-gradient(135deg,#667eea,#764ba2);
+  border:0;
+  box-shadow:0 10px 20px rgba(102,126,234,0.3);
+}
+</style>
 
-    <!-- Formulaire de création de cours -->
-    <form method="POST" enctype="multipart/form-data">
+<div class="container my-5" style="max-width:750px;">
+  <div class="card create-course-card shadow-lg">
+    
+    <div class="header-gradient text-center">
+      <div class="fs-1 mb-2">📚</div>
+      <h2 class="fw-bold mb-1">Créer un nouveau cours</h2>
+      <p class="mb-0 opacity-75">Partagez votre savoir avec vos élèves</p>
+    </div>
+
+    <div class="card-body p-4 p-md-5">
+      <form method="POST" enctype="multipart/form-data">
         {% csrf_token %}
 
-        <!-- Titre du cours -->
-        <div class="mb-3">
-            <label for="title" class="form-label fw-bold">📌 Titre du cours :</label>
-            <input type="text" id="title" name="title" class="form-control" required>
+        <div class="mb-4">
+          <label class="form-label fw-bold">📌 Titre du cours <span class="text-danger">*</span></label>
+          <input type="text" name="title" class="form-control input-modern" placeholder="Ex: Les fonctions numériques - 2BAC" required>
         </div>
 
-        <!-- Description du cours -->
-        <div class="mb-3">
-            <label for="description" class="form-label fw-bold">📄 Description :</label>
-            <textarea id="description" name="description" class="form-control" rows="4" required></textarea>
-        </div>
-        <!-- Image -->
-        <div class="mb-3">
-            <label for="image" class="form-label fw-bold">📸 Image :</label>
-            <input type="file" id="image" name="image" class="form-control">
+        <div class="mb-4">
+          <label class="form-label fw-bold">📄 Description du cours <span class="text-danger">*</span></label>
+          <textarea name="description" class="form-control input-modern" rows="5" placeholder="Décrivez le contenu, les objectifs pédagogiques..." required></textarea>
+          <small class="text-muted">Soyez clair et précis pour attirer les élèves.</small>
         </div>
 
-        <!-- Bouton de soumission -->
-        <div class="text-center">
-            <button type="submit" class="btn btn-success btn-lg"> ➕  Créer un Cours </button>
+        <div class="mb-4">
+          <label class="form-label fw-bold">📸 Image de couverture</label>
+          <input type="file" name="image" class="form-control input-modern" accept="image/*">
         </div>
-    </form>
+
+        <!-- RESPONSABILITÉ LÉGALE - DESIGN JADAB -->
+        <div class="legal-card p-4 mb-4">
+          <h6 class="fw-bold mb-3"><i class="bi bi-shield-check text-warning fs-5 me-2"></i>Engagement de responsabilité légale</h6>
+          
+          <div class="form-check mb-3">
+            <input class="form-check-input legal-check" type="checkbox" name="accept_responsabilite" id="c1" required>
+            <label class="form-check-label small" for="c1">
+              <span class="fw-semibold">Responsabilité pédagogique :</span> Je déclare assumer l'entière responsabilité du contenu publié, de son exactitude scientifique et pédagogique.
+            </label>
+          </div>
+
+          <div class="form-check mb-3">
+            <input class="form-check-input legal-check" type="checkbox" name="accept_droits" id="c2" required>
+            <label class="form-check-label small" for="c2">
+              <span class="fw-semibold">Propriété intellectuelle :</span> Je certifie que ce cours est mon œuvre originale et ne viole aucun droit d'auteur ou propriété intellectuelle de tiers.
+            </label>
+          </div>
+
+          <div class="form-check mb-2">
+            <input class="form-check-input legal-check" type="checkbox" name="accept_loi" id="c3" required>
+            <label class="form-check-label small" for="c3">
+              <span class="fw-semibold">Conformité légale :</span> J'accepte que tout contenu illicite, contraire à la loi marocaine <strong>Loi 09-08</strong> relative à la protection des données, ou au règlement intérieur sera supprimé sans préavis et engage ma seule responsabilité civile et pénale.
+            </label>
+          </div>
+
+          <div class="alert alert-light border mt-3 mb-0 small rounded-3">
+            <i class="bi bi-info-circle me-1"></i> En cochant ces cases, vous reconnaissez avoir lu et accepté les <a href="#" class="fw-bold text-decoration-none">Conditions d'utilisation</a> et la <a href="#" class="fw-bold text-decoration-none">Politique de confidentialité</a> de Math_Edu.
+          </div>
+        </div>
+
+        <div class="d-grid">
+          <button type="submit" class="btn btn-primary btn-create">
+            <i class="bi bi-plus-circle me-2"></i>Créer le cours maintenant
+          </button>
+        </div>
+
+        <p class="text-center text-muted small mt-3 mb-0">Votre cours sera visible après validation par l'administration.</p>
+      </form>
+    </div>
+
+  </div>
 </div>
 {% endblock %}

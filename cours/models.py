@@ -1,21 +1,45 @@
 from django.db import models
 from django.contrib.auth import get_user_model
+from django.conf import settings
+from django.utils import timezone
 
 User = get_user_model()
-
+    
 class Cours(models.Model):
-    title = models.CharField(max_length=255)
-    description = models.TextField()
-    image = models.ImageField(upload_to='cours/images/', blank=True, null=True)
-    teacher = models.ForeignKey(User, on_delete=models.CASCADE, related_name='courses')
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)  # تاريخ آخر تعديل
+    title = models.CharField(max_length=255, verbose_name="Titre du cours")
+    description = models.TextField(verbose_name="Description")
+    image = models.ImageField(upload_to='cours/images/', blank=True, null=True, verbose_name="Image de couverture")
+    
+    teacher = models.ForeignKey(
+        settings.AUTH_USER_MODEL, 
+        on_delete=models.CASCADE, 
+        related_name='courses',
+        verbose_name="Enseignant"
+    )
+    
+    # Dates
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Date de création")
+    updated_at = models.DateTimeField(auto_now=True, verbose_name="Dernière modification")
+
+    # --- RESPONSABILITÉ LÉGALE (Loi 09-08) ---
+    accepted_terms = models.BooleanField(default=False, verbose_name="Conditions acceptées")
+    accepted_at = models.DateTimeField(null=True, blank=True, verbose_name="Date d'acceptation des conditions")
+    accepted_ip = models.GenericIPAddressField(null=True, blank=True, verbose_name="Adresse IP d'acceptation")
+
+    # Optionnel: pour l'admin
+    is_validated = models.BooleanField(default=True, verbose_name="Validé par admin")
 
     class Meta:
+        verbose_name = "Cours"
         verbose_name_plural = "Cours"
+        ordering = ['-created_at']
 
     def __str__(self):
         return f"{self.title} - {self.teacher.username}"
+    
+    @property
+    def has_legal_proof(self):
+        return self.accepted_terms and self.accepted_at is not None
 
 class Lesson(models.Model):
     title = models.CharField(max_length=255)

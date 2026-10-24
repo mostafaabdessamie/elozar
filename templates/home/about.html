@@ -1,25 +1,36 @@
 {% extends 'base.html' %}
 {% block content %}
+<style>
+  .reglement-card{border-radius:22px; overflow:hidden}
+  .hero-reglement{background: linear-gradient(135deg,#0d6efd 0%,#6610f2 50%,#0dcaf0 100%); position:relative}
+  .privacy-box{border-radius:20px; position:relative; overflow:hidden; transition:0.3s}
+  .law-badge{border-radius:50px; padding:8px 18px; font-weight:700; text-decoration:none; display:inline-flex; align-items:center}
+  .law-badge:hover{transform:translateY(-2px); box-shadow:0 8px 20px rgba(102,16,242,0.3)}
+  .glow-0908{animation: glowPulse 2s infinite; border:2px solid #6610f2}
+  @keyframes glowPulse{0%{box-shadow:0 0 0 0 rgba(102,16,242,0.4)} 70%{box-shadow:0 0 0 14px rgba(102,16,242,0)} 100%{box-shadow:0 0 0 0 rgba(102,16,242,0)}}
+  .article-title{border-left:5px solid #0d6efd; padding-left:12px}
+</style>
+
 <div class="container mt-5 mb-5">
-    <div class="card shadow-lg border-0">
-        <div class="card-header bg-primary text-white text-center py-4">
+    <div class="card shadow-lg border-0 reglement-card">
+        <div class="hero-reglement text-white text-center py-4">
             <h2 class="fw-bold mb-0"><i class="bi bi-shield-check me-2"></i>RÈGLEMENT INTÉRIEUR</h2>
             <p class="mb-0 mt-2">Centre de Soutien Scolaire - Elozar</p>
         </div>
-        <div class="card-body p-5" style="line-height: 1.9; font-size: 16px;">
+        <div class="card-body p-4 p-lg-5" style="line-height: 1.9; font-size: 16px;">
 
-            <div class="alert alert-info border-0">
+            <div class="alert alert-info border-0" style="border-radius:12px">
                 <strong>Préambule :</strong> L'inscription au centre implique l'adhésion totale et sans réserve au présent règlement intérieur. Ce règlement a pour vocation de garantir un cadre d'excellence, de discipline et de respect mutuel, propice à la réussite de chaque apprenant.
             </div>
 
-            <h4 class="fw-bold text-primary mt-4">Article 1 : Inscription et Engagement</h4>
+            <h4 class="fw-bold text-primary mt-4 article-title">Article 1 : Inscription et Engagement</h4>
             <p>L'inscription est annuelle et personnelle. Tout élève inscrit s'engage à poursuivre son parcours avec assiduité et volonté. Le centre n'est pas un simple lieu de cours, c'est une famille éducative qui forge les leaders de demain.</p>
             <ul>
                 <li>Le dossier d'inscription doit être complet : fiche d'inscription, photo, copie CIN du tuteur.</li>
                 <li>Aucun élève n'est admis en salle sans inscription préalable.</li>
             </ul>
 
-            <h4 class="fw-bold text-primary mt-4">Article 2 : Paiement et Gestion Financière</h4>
+            <h4 class="fw-bold text-primary mt-4 article-title">Article 2 : Paiement et Gestion Financière</h4>
             <p>La réussite a un prix, et la rigueur est notre devise.</p>
             <ul>
                 <li>Les frais mensuels sont payables d'avance, du 1er au 5 de chaque mois.</li>
@@ -28,7 +39,7 @@
                 <li>Les frais d'inscription ne sont pas remboursables.</li>
             </ul>
 
-            <h4 class="fw-bold text-primary mt-4">Article 3 : Assiduité et Ponctualité - La Clé de la Réussite</h4>
+            <h4 class="fw-bold text-primary mt-4 article-title">Article 3 : Assiduité et Ponctualité - La Clé de la Réussite</h4>
             <p>Le temps est la ressource la plus précieuse. Le respect du temps est le premier pas vers l'excellence.</p>
             <ul>
                 <li>La présence à tous les cours est obligatoire. Trois absences non justifiées entraînent un avertissement.</li>
@@ -36,7 +47,7 @@
                 <li>Toute absence doit être justifiée par les parents / tuteurs au moins 24h à l'avance.</li>
             </ul>
 
-            <h4 class="fw-bold text-primary mt-4">Article 4 : Discipline et Comportement</h4>
+            <h4 class="fw-bold text-primary mt-4 article-title">Article 4 : Discipline et Comportement</h4>
             <p>Nous formons des esprits brillants dans des corps disciplinés. Le respect est non négociable.</p>
             <ul>
                 <li>Le respect envers les professeurs, l'administration et les camarades est une obligation absolue.</li>
@@ -45,21 +56,21 @@
                 <li>La tenue vestimentaire doit être correcte et décente, digne d'un lieu de savoir.</li>
             </ul>
 
-            <h4 class="fw-bold text-primary mt-4">Article 5 : Matériel et Locaux</h4>
+            <h4 class="fw-bold text-primary mt-4 article-title">Article 5 : Matériel et Locaux</h4>
             <ul>
                 <li>Chaque élève est responsable de son matériel : cahiers, livres, calculatrice.</li>
                 <li>Il est interdit de dégrader le mobilier, les murs ou le matériel pédagogique. Toute dégradation sera facturée.</li>
                 <li>La propreté des salles est l'affaire de tous. Laissons l'endroit meilleur que nous l'avons trouvé.</li>
             </ul>
 
-            <h4 class="fw-bold text-primary mt-4">Article 6 : Responsabilité et Sécurité</h4>
+            <h4 class="fw-bold text-primary mt-4 article-title">Article 6 : Responsabilité et Sécurité</h4>
             <ul>
                 <li>Le centre décline toute responsabilité en cas de perte ou de vol d'objets personnels.</li>
                 <li>Il est interdit de quitter le centre avant la fin du cours sans autorisation de l'administration.</li>
                 <li>En cas de maladie contagieuse, l'élève ne sera pas admis afin de préserver la santé de tous.</li>
             </ul>
 
-            <h4 class="fw-bold text-danger mt-4">Article 7 : Sanctions et Exclusion</h4>
+            <h4 class="fw-bold text-danger mt-4 article-title" style="border-left-color:#dc3545">Article 7 : Sanctions et Exclusion</h4>
             <p>L'excellence exige de la fermeté. Le non-respect du présent règlement expose l'élève à :</p>
             <ol>
                 <li>Avertissement oral</li>
@@ -68,7 +79,71 @@
                 <li><strong>Exclusion définitive sans remboursement</strong> en cas de faute grave ou récidive.</li>
             </ol>
 
-            <div class="text-center mt-5 p-4 bg-light rounded">
+            <hr class="my-5">
+            <h3 class="fw-bold text-center mb-4"><i class="bi bi-globe me-2"></i>Conditions d'utilisation de la plateforme Elozar</h3>
+
+            <h4 class="fw-bold text-primary mt-4 article-title">Article 8 : Rôle d'intermédiaire et Responsabilité du Contenu</h4>
+            <div class="alert alert-warning border-0" style="border-radius:12px">
+                <p class="mb-0"><strong>La plateforme Elozar agit uniquement en qualité d'intermédiaire technique.</strong></p>
+                <p class="mb-0">Tout enseignant déclarant et garantissant sur l'honneur que le cours publié est une création originale dont il est l'auteur. Il assume seul l'entière responsabilité juridique de son contenu. La plateforme ne pourra être tenue responsable du contenu publié par les utilisateurs.</p>
+            </div>
+            <ul>
+                <li>La plateforme se réserve le droit de supprimer tout contenu signalé comme illicite dans un délai de 24h.</li>
+                <li>Pour tout signalement : elozar@gmail.com</li>
+            </ul>
+
+            <!-- ARTICLE 9 LA3BA ZWINA - 09-08 -->
+            <div class="privacy-box bg-white shadow-lg p-0 mt-5 glow-0908">
+                <div class="p-4 text-white d-flex justify-content-between align-items-center flex-wrap" style="background: linear-gradient(135deg,#0d6efd,#6610f2); border-radius:18px 18px 0 0;">
+                    <div>
+                        <h4 class="fw-bold mb-1"><i class="bi bi-shield-lock-fill me-2"></i>Article 9 : Vie Privée - Loi 09-08</h4>
+                        <small class="opacity-75">Protection des données personnelles au Maroc</small>
+                    </div>
+                    <a href="{% url 'loi08_09' %}" class="law-badge bg-white text-primary mt-2 mt-md-0">
+                        <i class="bi bi-box-arrow-up-right me-2"></i>Voir Loi 09-08 complète
+                    </a>
+                </div>
+                <div class="p-4">
+                  <p class="text-muted small">La plateforme Elozar s'engage à respecter la <strong>Loi n° 09-08 relative à la protection des personnes physiques à l'égard du traitement des données à caractère personnel</strong>.</p>
+                  <div class="row g-3">
+                    <div class="col-md-6">
+                      <div class="p-3 h-100 rounded-3" style="background:#f8f7ff;">
+                        <div class="fw-bold text-primary mb-1">🔐 9.1 Consentement</div>
+                        <small class="text-muted">Aucune donnée perso (nom, photo, voix, tel, adresse) d'élève mineur sans <b>autorisation écrite du tuteur</b>. L'enseignant est seul responsable.</small>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="p-3 h-100 rounded-3" style="background:#f0fdf4;">
+                        <div class="fw-bold text-success mb-1">✅ 9.2 Droits & Retrait 24-48h</div>
+                        <small class="text-muted">Droit d'accès, rectification, opposition (Art.7 Loi 09-08). Demande à <b>elozar@gmail.com</b> - Suppression en 24-48h.</small>
+                      </div>
+                    </div>
+                    <div class="col-12">
+                      <div class="p-3 rounded-3 d-flex flex-wrap gap-2 align-items-start" style="background:#fff1f2; border:1px dashed #dc3545;">
+                        <div class="fw-bold text-danger me-2">🚫 9.3 Interdit :</div>
+                        <span class="badge bg-white text-danger border">📸 Visage sans floutage</span>
+                        <span class="badge bg-white text-danger border">🪪 CNE / Adresse / Tel</span>
+                        <span class="badge bg-white text-danger border">💔 Atteinte à la dignité</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="mt-4 p-3 rounded-3 text-white d-flex align-items-center" style="background: linear-gradient(90deg,#dc3545,#a61e4d);">
+                    <div class="fs-4 me-3">⚖️</div>
+                    <div class="small"><b>9.4 Sanction :</b> Suppression immédiate + suspension définitive. L'enseignant assume seul toute poursuite. Elozar = hébergeur, non responsable.</div>
+                  </div>
+                </div>
+            </div>
+            <!-- FIN ARTICLE 9 -->
+
+            <h4 class="fw-bold text-primary mt-5 article-title">Article 10 : Propriété Intellectuelle (DMCA)</h4>
+            <p>Le respect du travail d'autrui est une valeur fondamentale.</p>
+            <ul>
+                <li>Tout contenu plagié ou volé est interdit.</li>
+                <li>En cas de réclamation pour contrefaçon, le contenu sera retiré conformément aux procédures internationales DMCA.</li>
+                <li>L'enseignant récidiviste verra son compte banni définitivement.</li>
+            </ul>
+
+            <div class="text-center mt-5 p-4 bg-light rounded-4">
                 <h5 class="fw-bold">"Ici, nous ne préparons pas seulement des examens, nous préparons des avenirs."</h5>
                 <p class="mb-0">La Direction - Centre Elozar</p>
                 <small class="text-muted">Lu et approuvé par l'élève et son tuteur.</small>

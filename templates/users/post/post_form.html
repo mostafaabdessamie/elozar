@@ -18,55 +18,17 @@
         align-items: center;
         justify-content: space-between;
     }
-    .user-avatar{
-        width: 40px; height: 40px;
-        border-radius: 50%;
-        object-fit: cover;
-    }
-    .form-control-custom{
-        border: none;
-        background: transparent;
-        font-size: 18px;
-        resize: none;
-        box-shadow: none !important;
-    }
-    .form-control-custom:focus{
-        outline: none;
-        background: transparent;
-    }
-    .image-preview{
-        max-height: 300px;
-        width: 100%;
-        object-fit: cover;
-        border-radius: 10px;
-        display: none;
-    }
-    .upload-area{
-        border: 2px dashed #ccd0d5;
-        border-radius: 10px;
-        padding: 20px;
-        text-align: center;
-        cursor: pointer;
-        transition: 0.2s;
-        background: #f0f2f5;
-    }
-    .upload-area:hover{
-        background: #e4e6eb;
-        border-color: #0866ff;
-    }
-    .btn-post{
-        background: #0866ff;
-        border-radius: 8px;
-        font-weight: 700;
-        padding: 10px;
-        width: 100%;
-        border: none;
-        color: white;
-    }
-    .btn-post:disabled{
-        background: #e4e6eb;
-        color: #bcc0c4;
-    }
+    .user-avatar{width:40px;height:40px;border-radius:50%;object-fit:cover}
+    .form-control-custom{border:none;background:transparent;font-size:18px;resize:none;box-shadow:none !important}
+    .form-control-custom:focus{outline:none;background:transparent}
+    .image-preview{max-height:300px;width:100%;object-fit:cover;border-radius:10px;display:none}
+    .upload-area{border:2px dashed #ccd0d5;border-radius:10px;padding:20px;text-align:center;cursor:pointer;transition:0.2s;background:#f0f2f5}
+    .upload-area:hover{background:#e4e6eb;border-color:#0866ff}
+    .btn-post{background:#0866ff;border-radius:8px;font-weight:700;padding:10px;width:100%;border:none;color:white;transition:0.2s}
+    .btn-post:disabled{background:#e4e6eb;color:#bcc0c4}
+    .btn-post:hover:not(:disabled){transform:translateY(-1px); box-shadow:0 5px 15px rgba(8,102,255,0.3)}
+    .legal-post{border-radius:10px; background:#f8f7ff; border:1.5px solid #6610f2; position:relative}
+    .legal-post::before{content:"⚖️ Loi 09-08"; position:absolute; top:-10px; left:15px; background:#fff; padding:0 8px; font-size:11px; font-weight:700; color:#6610f2}
 </style>
 
 <div class="container">
@@ -76,7 +38,7 @@
             <i class="fas fa-edit me-2 text-primary"></i>
             {% if object %}Modifier la publication{% else %}Créer une publication{% endif %}
         </h5>
-        <a href="javascript:history.back()" class="btn btn-light rounded-circle" style="width:36px; height:36px; display:flex; align-items:center; justify-content:center;"><i class="fas fa-times"></i></a>
+        <a href="javascript:history.back()" class="btn btn-light rounded-circle" style="width:36px;height:36px;display:flex;align-items:center;justify-content:center;"><i class="fas fa-times"></i></a>
     </div>
 
     <div class="p-3">
@@ -95,23 +57,20 @@
         <form method="post" enctype="multipart/form-data" id="postForm">
             {% csrf_token %}
             
-            <!-- Champ content stylé -->
             <div class="mb-3">
                 <textarea name="content" class="form-control form-control-custom" rows="5" placeholder="Que voulez-vous dire, {{ request.user.username }} ?" required id="contentArea">{{ form.content.value|default_if_none:'' }}</textarea>
                 {{ form.content.errors }}
             </div>
 
-            <!-- Preview image -->
             <img id="preview" class="image-preview mb-3">
 
             {% if object and object.image %}
             <div class="mb-3 position-relative">
-                <img src="{{ object.image.url }}" class="w-100 rounded-3" style="max-height:300px; object-fit:cover;">
+                <img src="{{ object.image.url }}" class="w-100 rounded-3" style="max-height:300px;object-fit:cover;">
                 <small class="text-muted">Image actuelle - choisissez une nouvelle pour remplacer</small>
             </div>
             {% endif %}
 
-            <!-- Upload zone -->
             <label for="id_image" class="upload-area w-100 mb-3 d-block">
                 <i class="fas fa-images fa-2x text-success mb-2"></i>
                 <div class="fw-bold">Ajouter une photo</div>
@@ -120,9 +79,21 @@
             <div style="display:none">{{ form.image }}</div>
             <div class="text-danger small mb-2">{{ form.image.errors }}</div>
 
-            <!-- Autres champs si kaynin (title...) -->
+            <!-- Certification 09-08 - زوينة ومهمة -->
+            {% if form.certif_original %}
+            <div class="legal-post p-3 mb-3">
+              <div class="form-check m-0">
+                {{ form.certif_original }}
+                <label class="form-check-label small ms-1" for="{{ form.certif_original.id_for_label }}" style="line-height:1.5">
+                  Je certifie sur l'honneur que ce cours est <b>mon œuvre originale</b> et que j'ai obtenu l'autorisation écrite pour toute personne identifiable (visage, voix, nom). Je respecte la <a href="{% url 'loi08_09' %}" target="_blank" class="fw-bold text-decoration-none">Loi 09-08</a>. <span class="text-danger">*</span>
+                </label>
+              </div>
+              {% if form.certif_original.errors %}<div class="text-danger small mt-2">{{ form.certif_original.errors }}</div>{% endif %}
+            </div>
+            {% endif %}
+
             {% for field in form %}
-                {% if field.name != 'content' and field.name != 'image' %}
+                {% if field.name != 'content' and field.name != 'image' and field.name != 'certif_original' %}
                 <div class="mb-3">
                     <label class="form-label fw-bold small">{{ field.label }}</label>
                     {{ field }}
@@ -134,6 +105,7 @@
             <button type="submit" class="btn-post" id="submitBtn">
                 <i class="fas fa-paper-plane me-2"></i>{% if object %}Mettre à jour{% else %}Publier{% endif %}
             </button>
+            <p class="text-center small text-muted mt-2">Votre publication sera vérifiée selon la Loi 09-08</p>
         </form>
     </div>
 </div>
@@ -144,6 +116,14 @@
     const preview = document.getElementById('preview');
     const content = document.getElementById('contentArea');
     const btn = document.getElementById('submitBtn');
+    const certif = document.getElementById('{{ form.certif_original.id_for_label }}');
+
+    function checkValid(){
+        const hasText = content.value.trim() !== '';
+        const hasCertif = certif ? certif.checked : true;
+        btn.disabled = !(hasText && hasCertif);
+        btn.style.opacity = btn.disabled ? '0.6' : '1';
+    }
 
     if(input){
         input.addEventListener('change', function(){
@@ -158,10 +138,8 @@
             }
         });
     }
-    // active button seulement si kayn texte
-    content.addEventListener('input', () => {
-        btn.disabled = content.value.trim() === '';
-        btn.style.opacity = btn.disabled ? '0.6' : '1';
-    });
+    content.addEventListener('input', checkValid);
+    if(certif) certif.addEventListener('change', checkValid);
+    checkValid();
 </script>
-{% endblock %}
+{% endblock %} 

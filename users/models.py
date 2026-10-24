@@ -12,6 +12,10 @@ class CustomUser(AbstractUser):
     user_type = models.PositiveSmallIntegerField(choices=USER_TYPE_CHOICES, default=1)
     profile_picture = models.ImageField(upload_to='profile_pictures/', null=True, blank=True, default='profile_pictures/1_e3DaScz.jpg')
 
+    # ===== دليل قانوني 09-08 =====
+    accepted_reglement_at = models.DateTimeField(null=True, blank=True, verbose_name="Date acceptation règlement")
+    ip_at_registration = models.GenericIPAddressField(null=True, blank=True)
+
     def __str__(self):
         return self.username
 
@@ -21,6 +25,11 @@ class Profile(models.Model):
     location = models.CharField(max_length=100, blank=True, null=True)
     birth_date = models.DateField(blank=True, null=True)
     last_seen = models.DateTimeField(default=timezone.now)
+
+    # ===== الموافقة القانونية =====
+    accepted_reglement = models.BooleanField(default=False, verbose_name="A accepté le règlement")
+    accepted_0908 = models.BooleanField(default=False, verbose_name="A accepté la Loi 09-08")
+    accepted_at = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
         return f"Profil de {self.user.username}"
@@ -36,6 +45,12 @@ class Post(models.Model):
     content = models.TextField()
     image = models.ImageField(upload_to='posts/', blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
+
+    # ===== شهادة لكل publication - كتحمل الأستاذ المسؤولية =====
+    is_original = models.BooleanField(default=False, verbose_name="Certifié œuvre originale")
+    has_consent_0908 = models.BooleanField(default=False, verbose_name="Respect Loi 09-08 certifié")
+    contains_personal_data = models.BooleanField(default=False, verbose_name="Contient données perso (nécessite preuve)")
+    consent_proof = models.FileField(upload_to='consents_0908/', null=True, blank=True, verbose_name="Preuve consentement écrit")
 
     def __str__(self):
         return f"Post {self.id} by {self.user}"
@@ -72,6 +87,7 @@ class Notification(models.Model):
         ('comment', 'Comment'),
         ('friend', 'Amitié'),
         ('message', 'Message'),
+        ('legal_0908', 'Signalement 09-08'), # جديد
     )
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='notifications')
     message = models.CharField(max_length=255)

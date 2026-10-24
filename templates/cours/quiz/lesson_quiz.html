@@ -1,33 +1,90 @@
 {% extends 'base.html' %}
-
-
-{% block title %}MathEdu: Quiz-{{ lesson.title }}{% endblock %}
 {% block content %}
-<div class="container mt-5">
-    <h1 class="text-center text-primary mb-4">📝 Quiz: {{ lesson.title }}</h1>
+<style>
+  .quiz-hero{
+    background: linear-gradient(135deg,#0f172a 0%,#4338ca 100%);
+    border-radius:28px; padding:32px 36px; color:white; position:relative; overflow:hidden;
+  }
+  .quiz-hero::after{
+    content:""; position:absolute; right:-30px; top:-30px;
+    width:180px; height:180px; background:rgba(255,255,255,0.07);
+    border-radius:50%;
+  }
+  .question-card{
+    border-radius:20px; border:1.5px solid #e2e8f0;
+    background:white; transition:.25s; overflow:hidden; height:100%;
+  }
+  .question-card:hover{border-color:#c7d2fe; transform:translateY(-4px); box-shadow:0 16px 24px rgba(0,0,0,0.06);}
+  .q-number{
+    width:38px; height:38px; border-radius:12px;
+    display:flex; align-items:center; justify-content:center;
+    font-weight:800; background: linear-gradient(135deg,#6366f1,#0ea5e9); color:white;
+  }
+  .choice-item{
+    border:1.5px solid #e2e8f0; border-radius:14px;
+    padding:12px 16px; transition:.2s; cursor:pointer;
+    display:flex; align-items:center; gap:12px; background:#f8fafc;
+  }
+  .choice-item:hover{background:white; border-color:#6366f1;}
+  .choice-item:has(input:checked){
+    background:#eef2ff; border-color:#6366f1; box-shadow:0 0 0 3px rgba(99,102,241,0.15);
+  }
+  .choice-item input{accent-color:#6366f1; width:18px; height:18px;}
+  .btn-submit{
+    background: linear-gradient(135deg,#22c55e,#16a34a);
+    border:0; border-radius:100px; padding:14px 40px;
+    font-weight:800; color:white; font-size:18px;
+    box-shadow:0 12px 20px rgba(34,197,94,0.3);
+  }
+  .btn-submit:hover{transform:translateY(-2px); box-shadow:0 16px 28px rgba(34,197,94,0.4); color:white;}
+  .progress-bar-quiz{height:8px; border-radius:100px; background:#e2e8f0; overflow:hidden;}
+  .progress-bar-quiz div{height:100%; background: linear-gradient(90deg,#6366f1,#0ea5e9); border-radius:100px;}
+</style>
+
+<div class="container mt-4" style="max-width:1100px;">
+    
+    <div class="quiz-hero shadow-sm mb-4 position-relative">
+      <div class="d-flex justify-content-between align-items-start flex-wrap gap-3" style="position:relative; z-index:2;">
+        <div>
+          <span class="badge bg-white text-primary rounded-pill px-3 mb-2">📝 Quiz</span>
+          <h1 class="fw-bold mb-1" style="letter-spacing:-1px;">{{ lesson.title }}</h1>
+          <p class="mb-0 opacity-75"><i class="bi bi-patch-question me-1"></i> {{ questions|length }} questions • Choisissez la bonne réponse</p>
+        </div>
+        <div class="bg-white bg-opacity-10 rounded-pill px-4 py-2 fw-bold backdrop-blur"><i class="bi bi-clock me-1"></i> {{ questions|length|add:"0" }} min</div>
+      </div>
+      <div class="progress-bar-quiz mt-4" style="position:relative; z-index:2;"><div style="width: {{ questions|length }}0%; max-width:100%;"></div></div>
+    </div>
 
     <form method="POST">
         {% csrf_token %}
-        <div class="row">
+        <div class="row g-4">
             {% for question in questions %}
-                <div class="col-md-4 mb-4">
-                    <div class="question-box p-4 border border-light rounded shadow-sm bg-info">
-                        <h5 class="text-dark">{{ question.text }}</h5>
+                <div class="col-md-6 col-lg-4">
+                    <div class="question-card p-4">
+                        <div class="d-flex align-items-center gap-3 mb-3">
+                            <div class="q-number">{{ forloop.counter }}</div>
+                            <small class="text-muted fw-bold text-uppercase" style="letter-spacing:.6px;">Question {{ forloop.counter }}</small>
+                        </div>
+                        <h5 class="fw-bold mb-4" style="line-height:1.4;">{{ question.text }}</h5>
                         
+                        <div class="d-flex flex-column gap-2">
                         {% for choice in question.choices.all %}
-                            <div class="form-check mb-3">
-                                <input type="radio" name="question_{{ question.id }}" value="{{ choice.id }}" class="form-check-input" required>
-                                <label class="form-check-label text-muted">{{ choice.text }}</label>
-                            </div>
+                            <label class="choice-item">
+                                <input type="radio" name="question_{{ question.id }}" value="{{ choice.id }}" required>
+                                <span class="fw-medium">{{ choice.text }}</span>
+                            </label>
                         {% endfor %}
+                        </div>
                     </div>
                 </div>
             {% endfor %}
         </div>
 
-        <div class="text-center mt-4">
-            <button type="submit" class="btn btn-lg btn-success">📤 Soumettre</button>
+        <div class="text-center mt-5">
+            <button type="submit" class="btn btn-submit"><i class="bi bi-send-fill me-2"></i> Soumettre mes réponses</button>
+            <p class="text-muted small mt-3">Vérifiez bien avant d'envoyer, vous ne pourrez pas revenir en arrière</p>
         </div>
     </form>
 </div>
+<br><br>
 {% endblock %}

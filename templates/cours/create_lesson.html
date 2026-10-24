@@ -1,66 +1,134 @@
 {% extends 'base.html' %}
-
-{% block title %}Math_Edu: Ajouter Leçon {% endblock %}
-
 {% block content %}
-<div class="container mt-5">
-    <!-- Titre du formulaire -->
-    <h1 class="text-center text-primary mb-4">📝 Créer un nouveau cours</h1>
-    
-    <!-- Formulaire de création de leçon -->
-    <form method="POST" enctype="multipart/form-data" class="needs-validation" novalidate>
+<style>
+.create-lesson-card{ border-radius:24px; border:0; overflow:hidden; }
+.header-lesson{
+  background: linear-gradient(135deg,#0f172a 0%,#334155 100%);
+  padding:32px; color:white;
+}
+.input-modern{
+  border-radius:12px; padding:12px 16px;
+  border:1px solid #e5e7eb; background:#f9fafb;
+}
+.input-modern:focus{
+  background:#fff; border-color:#0ea5e9;
+  box-shadow:0 0 0 4px rgba(14,165,233,0.15);
+}
+.upload-box{
+  border:2px dashed #cbd5e1;
+  border-radius:14px; padding:18px;
+  background:#f8fafc; transition:.2s;
+}
+.upload-box:hover{ border-color:#0ea5e9; background:#f0f9ff; }
+.step-badge{
+  width:28px; height:28px; border-radius:8px;
+  display:inline-flex; align-items:center; justify-content:center;
+  font-weight:800; font-size:13px; margin-right:8px;
+}
+</style>
+
+<div class="container my-5" style="max-width:850px;">
+  <div class="card create-lesson-card shadow-lg">
+    <div class="header-lesson text-center">
+      <div class="fs-1 mb-1">🎬</div>
+      <h2 class="fw-bold mb-1">Créer une nouvelle leçon</h2>
+      <p class="mb-0 opacity-75 small">Ajoutez du contenu vidéo, image et PDF à votre cours</p>
+    </div>
+
+    <div class="card-body p-4 p-md-5">
+      <form method="POST" enctype="multipart/form-data">
         {% csrf_token %}
 
-        <!-- Sélection du cours -->
-        <div class="mb-3">
-            <label for="course" class="form-label fw-bold">📚 Cours :</label>
-            <select id="course" name="course" class="form-select" required>
-                {% for course in courses %}
-                    <option value="{{ course.id }}">{{ course.title }}</option>
-                {% endfor %}
+        <!-- ÉTAPE 1 -->
+        <h6 class="fw-bold mb-3"><span class="step-badge bg-primary text-white">1</span>Informations générales</h6>
+        <div class="row g-3 mb-4">
+          <div class="col-md-8">
+            <label class="form-label fw-bold">📚 Cours associé <span class="text-danger">*</span></label>
+            <select name="course" class="form-select input-modern" required>
+              <option value="" disabled selected>Choisissez un cours...</option>
+              {% for course in courses %}
+                <option value="{{ course.id }}">{{ course.title }}</option>
+              {% endfor %}
             </select>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label fw-bold">🔢 Ordre</label>
+            <input type="number" name="order" class="form-control input-modern" value="0" min="0">
+          </div>
+          <div class="col-12">
+            <label class="form-label fw-bold">📝 Titre de la leçon <span class="text-danger">*</span></label>
+            <input type="text" name="title" class="form-control input-modern" placeholder="Ex: Chapitre 1 - Les nombres réels" required>
+          </div>
+          <div class="col-12">
+            <label class="form-label fw-bold">📄 Contenu détaillé <span class="text-danger">*</span></label>
+            <textarea name="content" class="form-control input-modern" rows="5" placeholder="Rédigez le résumé, objectifs, explications..." required></textarea>
+          </div>
         </div>
 
-        <!-- Titre de la leçon -->
-        <div class="mb-3">
-            <label for="title" class="form-label fw-bold">📝 Titre de la leçon :</label>
-            <input type="text" id="title" name="title" class="form-control" required>
+        <hr class="my-4">
+
+        <!-- ÉTAPE 2 -->
+        <h6 class="fw-bold mb-3"><span class="step-badge bg-success text-white">2</span>Ressources multimédias</h6>
+        <div class="row g-3 mb-4">
+
+          <div class="col-md-4">
+            <label class="form-label fw-bold small">🎥 Vidéo de la leçon</label>
+            <div class="upload-box text-center">
+              <i class="bi bi-camera-video fs-4 text-muted"></i>
+              <input type="file" name="profile_video" class="form-control form-control-sm mt-2" accept="video/*">
+              <small class="text-muted" style="font-size:11px;">MP4, MOV max 200MB</small>
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <label class="form-label fw-bold small">📸 Image illustrative</label>
+            <div class="upload-box text-center">
+              <i class="bi bi-image fs-4 text-muted"></i>
+              <input type="file" name="image" class="form-control form-control-sm mt-2" accept="image/*" onchange="previewImg(event)">
+              <small class="text-muted" style="font-size:11px;">JPG, PNG</small>
+              <img id="preview" class="rounded-3 mt-2 d-none" style="width:100%; height:80px; object-fit:cover;">
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <label class="form-label fw-bold small">📄 Document PDF</label>
+            <div class="upload-box text-center">
+              <i class="bi bi-file-earmark-pdf fs-4 text-danger"></i>
+              <input type="file" name="pdf" class="form-control form-control-sm mt-2" accept="application/pdf">
+              <small class="text-muted" style="font-size:11px;">Cours, exercices</small>
+            </div>
+          </div>
+
         </div>
 
-        <!-- Contenu de la leçon -->
-        <div class="mb-3">
-            <label for="content" class="form-label fw-bold">📄 Contenu :</label>
-            <textarea id="content" name="content" class="form-control" rows="5" required></textarea>
+        <!-- RESPONSABILITÉ -->
+        <div class="p-3 rounded-4 mb-4" style="background:#fffbeb; border:1.5px solid #fde68a;">
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="legal" required>
+            <label class="form-check-label small" for="legal">
+              Je certifie que cette leçon respecte la <strong>Loi 09-08</strong> et ne contient aucun contenu protégé sans autorisation. J'en assume l'entière responsabilité.
+            </label>
+          </div>
         </div>
 
-        <!-- Vidéo de la leçon -->
-        <div class="mb-3">
-            <label for="profile_video" class="form-label fw-bold">🎥 Vidéo de profil :</label>
-            <input type="file" id="profile_video" name="profile_video" class="form-control">
+        <div class="d-grid">
+          <button type="submit" class="btn btn-dark rounded-3 py-3 fw-bold fs-6">
+            <i class="bi bi-plus-circle me-2"></i>Créer la leçon maintenant
+          </button>
         </div>
-
-        <!-- Image -->
-        <div class="mb-3">
-            <label for="image" class="form-label fw-bold">📸 Image :</label>
-            <input type="file" id="image" name="image" class="form-control">
-        </div>
-
-        <!-- PDF -->
-        <div class="mb-3">
-            <label for="pdf" class="form-label fw-bold">📄 PDF :</label>
-            <input type="file" id="pdf" name="pdf" class="form-control">
-        </div>
-
-        <!-- Ordre de la leçon -->
-        <div class="mb-3">
-            <label for="order" class="form-label fw-bold">🔢 Ordre :</label>
-            <input type="number" id="order" name="order" class="form-control" value="0">
-        </div>
-
-        <!-- Bouton de soumission -->
-        <div class="text-center">
-            <button type="submit" class="btn btn-success btn-lg">Créer la leçon</button>
-        </div>
-    </form>
+        <p class="text-center text-muted small mt-3 mb-0">La leçon sera ajoutée au programme du cours immédiatement.</p>
+      </form>
+    </div>
+  </div>
 </div>
+
+<script>
+function previewImg(e){
+  const f = e.target.files[0];
+  if(!f) return;
+  const img = document.getElementById('preview');
+  img.src = URL.createObjectURL(f);
+  img.classList.remove('d-none');
+}
+</script>
 {% endblock %}
